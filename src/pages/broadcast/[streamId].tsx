@@ -57,6 +57,30 @@ interface ChatMessage {
   isModerator?: boolean;
 }
 
+// Helper function to convert URLs in text to clickable links
+function linkifyText(text: string) {
+  const urlRegex = /(https?:\/\/[^\s<>"']+)/g;
+  const parts = text.split(urlRegex);
+
+  return parts.map((part, index) => {
+    if (part.match(urlRegex)) {
+      return (
+        <a
+          key={index}
+          href={part}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-400 hover:text-blue-300 underline font-medium break-all transition-colors"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {part}
+        </a>
+      );
+    }
+    return part;
+  });
+}
+
 export default function BroadcasterPage() {
   const { streamId } = useParams<{ streamId: string }>();
   const navigate = useNavigate();
@@ -70,22 +94,22 @@ export default function BroadcasterPage() {
   const [isEnding, setIsEnding] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
+  
   // Stream is ready to start immediately (no pre-live modal needed)
   const hasInitializedRef = useRef(false);
-
+  
   // End stream confirmation
   const [showEndConfirmation, setShowEndConfirmation] = useState(false);
-
+  
   // Post-live summary
   const [showSummary, setShowSummary] = useState(false);
   const [streamSummary, setStreamSummary] = useState<any>(null);
-
+  
   // Audio/Video controls
   const [isMuted, setIsMuted] = useState(false);
   const [cameraFacing, setCameraFacing] = useState<'user' | 'environment'>('user');
   const [isStreaming, setIsStreaming] = useState(false); // Control when to start streaming
-
+  
   // Chat state
   const [socket, setSocket] = useState<Socket | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -1137,7 +1161,7 @@ export default function BroadcasterPage() {
                               </Avatar>
                               <div className="flex-1 min-w-0">
                                 <div className="flex items-center gap-2">
-                                  <span 
+                                  <span
                                     className={`text-base font-bold ${msg.isHost ? 'text-primary' : 'text-white'} drop-shadow-lg leading-tight cursor-pointer hover:underline`}
                                     onClick={() => handleViewProfile(msg.userId)}
                                   >
@@ -1154,7 +1178,7 @@ export default function BroadcasterPage() {
                                     </Badge>
                                   )}
                                 </div>
-                                <p className="text-base text-white drop-shadow-lg break-words leading-snug">{msg.message}</p>
+                                <p className="text-base text-white drop-shadow-lg break-words leading-snug">{linkifyText(msg.message)}</p>
                               </div>
                               
                               {/* Moderation Menu - Only show for non-host messages */}

@@ -149,7 +149,7 @@ export default function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
         </DialogHeader>
 
         {!isFirebaseConfigured && (
-          <div className="bg-yellow-500/10 border border-yellow-500/50 text-yellow-700 dark:text-yellow-400 px-4 py-3 rounded-md text-sm">
+          <div className="bg-yellow-500 border border-yellow-600 text-black px-4 py-3 rounded-md text-sm font-medium">
             <strong>⚠️ Firebase Not Configured</strong>
             <p className="mt-1">
               Authentication is not available. Please configure Firebase credentials to enable login.

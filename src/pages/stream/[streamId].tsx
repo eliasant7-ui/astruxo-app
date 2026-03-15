@@ -67,6 +67,30 @@ interface ChatMessage {
   isModerator?: boolean;
 }
 
+// Helper function to convert URLs in text to clickable links
+function linkifyText(text: string) {
+  const urlRegex = /(https?:\/\/[^\s<>"']+)/g;
+  const parts = text.split(urlRegex);
+
+  return parts.map((part, index) => {
+    if (part.match(urlRegex)) {
+      return (
+        <a
+          key={index}
+          href={part}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-400 hover:text-blue-300 underline font-medium break-all transition-colors"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {part}
+        </a>
+      );
+    }
+    return part;
+  });
+}
+
 export default function StreamViewerPage() {
   const { streamId } = useParams<{ streamId: string }>();
   const { user } = useAuth();
@@ -1159,7 +1183,7 @@ export default function StreamViewerPage() {
                             </div>
                           );
                         }
-                        
+
                         // Regular chat messages - Floating style
                         return (
                           <div key={msg.id} className="flex gap-2 items-start">
@@ -1194,7 +1218,7 @@ export default function StreamViewerPage() {
                                 )}
                               </div>
                               <p className="text-sm text-white drop-shadow-lg break-words leading-snug">
-                                {msg.message}
+                                {linkifyText(msg.message)}
                               </p>
                             </div>
                           </div>
