@@ -33,6 +33,7 @@
     "@godaddy/react": "^1",
     "@heroicons/react": "^2.2.0",
     "@hookform/resolvers": "^3.10.0",
+    "@opentelemetry/api": "^1.9.0",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-alert-dialog": "^1.1.15",
     "@radix-ui/react-aspect-ratio": "^1.1.7",
@@ -67,6 +68,7 @@
     "agora-rtc-react": "^2.5.1",
     "agora-rtc-sdk-ng": "^4.24.2",
     "agora-token": "^2.0.5",
+    "autoprefixer": "^10.4.20",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
@@ -86,6 +88,7 @@
     "mysql2": "^3.15.3",
     "next-themes": "^0.4.6",
     "nodemailer": "^7.0.11",
+    "postcss": "^8.5.8",
     "react": "^19.0.0",
     "react-day-picker": "^9.9.0",
     "react-dom": "^19.0.0",
@@ -100,11 +103,7 @@
     "stripe": "^20.4.0",
     "tailwind-merge": "^2.6.0",
     "tailwindcss": "^3.4.19",
-    "postcss": "^8.5.8",
-    "autoprefixer": "^10.4.20",
     "tailwindcss-animate": "^1.0.7",
-  
-  
     "uuid": "^13.0.0",
     "vaul": "^1.1.2",
     "vite-plugin-api-routes": "^1.2.6",
@@ -132,7 +131,6 @@
     "@typescript-eslint/eslint-plugin": "^8.18.2",
     "@typescript-eslint/parser": "^8.18.2",
     "@vitest/ui": "^3.2.4",
-    
     "baseline-browser-mapping": "^2.10.0",
     "drizzle-kit": "^0.31.6",
     "esbuild": "^0.25.12",
@@ -140,10 +138,7 @@
     "eslint-plugin-react": "^7.37.2",
     "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-react-refresh": "^0.4.14",
-    
     "prettier": "^3.4.2",
-    
-  
     "tsx": "^4.20.6",
     "typescript": "^5.7.2",
     "vite": "^6.4.1",
