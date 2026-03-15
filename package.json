@@ -7,6 +7,7 @@
   },
   "scripts": {
     "dev": "vite",
+    "start":"npm run db:migrate && node dist/server.bundle.cjs",
     "build": "vite build && node bundle.js",
     "build:vite": "vite build",
     "bundle": "node bundle.js",
