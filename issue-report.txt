@@ -1,0 +1,592 @@
+﻿Sr. No.	Device	Bug Type	Module	Descriptions	Attachments ( ScreenShots / Video )	Developer Comments        QA Comments
+Navigation / Header
+
+
+
+1
+
+
+2
+
+Chrome Version 145.0.7632.160, Firefox, Microsoft Edge
+
+Chrome Version 145.0.7632.160, Firefox, Microsoft Edge
+
+
+Usability
+
+
+Functional
+
+
+Feed – Report Post
+
+
+Feed – Comments Section
+
+
+When a user reports a post by selecting a reason and clicking on the “Submit Report” button, no action is triggered and no confirmation message appears. The system does not provide any feedback indicating whether the report was successfully submitted or not.
+https://jam.dev/c/9055d9f2-6f6f-4c21-b376-d4c1dab380f3
+
+When a user comments on a post and another user wants to reply to that specific comment, there is no dedicated “Reply” option available. If
+a user writes a response, it appears as a new independent comment	https://jam.dev/c/2be0f75e-fa80-4276-84a8-3b682df94e8d instead of a reply to the original comment. This makes conversations
+difficult to follow and disrupts the comment thread structure.
+
+
+
+
+
+3
+
+
+Chrome Version 145.0.7632.160, Firefox, Microsoft Edge
+
+When the user uploads a PDF file in the upload section, the system does not display any inline validation message or indication if the file format is not allowed or does not meet the upload criteria. The system should clearly inform the user whether the file format is unsupported or the file
+Functional	Profile >> upload image      does not meet the required conditions
+PDF file used :- https://drive.google. com/file/d/1qrtN6n7SDRAdw49DSIVp477uITT2JX1S/view? usp=drive_link
+
+
+https://jam.dev/c/b51900f3-bb81-431d-9bb5-2ea50ec638d0
+
+
+
+
+4
+
+
+Chrome Version 145.0.7632.160, Firefox, Microsoft Edge
+
+
+Functional
+
+When the user fills details on the Register page and then clicks the Sign In button, and later navigates back to the Register page, the previously
+Authentication – Register    entered form data remains in the input fields aftre refreshing the page	https://kommodo.
+Page	the info desabled . Ideally, the form should reset when the user	ai/recordings/JDZUgRFSlce4hWmOuHs1?onlyRecording=1 navigates away and returns to the Register page. Keeping old data may
+confuse users or lead to incorrect information being submitted.
+
+
+
+
+5
+
+Chrome Version 145.0.7632.160, Firefox, Microsoft Edge
+
+
+When the user clicks on the feed content , it is not clickable and does not Functional	Navigation >> Feed          perform any action such as opening the post, expanding the media, or
+redirecting to the post detail page.
+
+
+https://jam.dev/c/acfb369d-d805-477d-ac2e-dbcd886b2d94
+
+
+
+
+6
+
+Chrome Version 145.0.7632.160, Firefox, Microsoft Edge
+
+
+Functional	Live go >> Share btn
+
+
+During the live session, when the user clicks on the Share button, no
+action is triggered and no sharing options appear. Other controls such          https://kommodo.ai/recordings/DmzSHJvLENFYiHtPzVPs? as Home, Disconnect Call, Moderation, and Mute All work correctly, but	onlyRecording=1
+the Share button does not respond or perform any function.
+
+
+
+
+7
+
+
+Chrome Version 145.0.7632.160, Firefox, Microsoft Edge
+
+When the user enters an invalid email & give spaces in the other input fields, then clicks the “Create Account” button, an error message appears - Firebase: Error (auth/network-request-failed).
+Validation / Functional	 but it is not user-friendly and does not highlight or indicate which specific fields contain errors.
+Authentication – Register
+Page
+This makes it difficult for users to understand what needs to be corrected.
+
+
+https://kommodo.ai/recordings/BIlVilsTRGQ2zYFUCJ82? onlyRecording=1
+
+
+
+
+8
+
+
+Chrome Version 145.0.7632.160, Firefox, Microsoft Edge
+
+
+Functional / UI
+
+After the user successfully creates an account, there is no confirmation
+Authentication – Register    or success message displayed before redirecting to the dashboard. The        https://kommodo.ai/recordings/erxP4Re6UAbYwy9cgYI2? Page	account has been created successfully, which may create confusion	onlyRecording=1
+system directly redirects the user without informing them that the
+about whether the registration was completed.
+
+
+
+
+9
+
+
+
+10
+
+
+Chrome Version 145.0.7632.160, Firefox, Microsoft Edge
+
+Chrome Version 145.0.7632.160, Firefox, Microsoft Edge
+
+
+Functional
+
+
+
+authenticated APIs
+
+
+Authentication – Registration
+
+
+Login Network
+
+When the user creates an account successfully and is redirected to the webpage, the loading spinner with the message “Creating Account… Loading” continues to appear for some time even after the page has already loaded. After a few moments the popup disappears automatically. This creates confusion because the process appears to still be loading even though the account has already been created and the user has been redirected.
+
+Login API returns 401 Unauthorized when clicking login button
+
+
+https://jam.dev/c/99b35790-0286-4a14-a3bd-b99378eb4b8a
+
+
+https://prnt.sc/wdo3vp2LJ3lu
+
+
+
+
+11
+
+Chrome Version 145.0.7632.160, Firefox, Microsoft Edge
+
+
+No restriction after multiple invalid login attempts
+Functional	Authentication / Login      The system allows unlimited login attempts and only displays the	https://jam.dev/c/64782f63-98cb-47d2-b7e9-b67ffe1651de message "Invalid credentials" without any restriction or security control.
+
+
+
+
+12
+
+
+Chrome Version 145.0.7632.160, Firefox, Microsoft Edge
+
+When the user clicks on the Profile section and then selects the Logout button, the user is immediately logged out of the web application
+Functional / UI	Profile	without any confirmation message. There should be a confirmation	https://jam.dev/c/c7089b40-c6de-4a27-9fd5-01fe81e6132f popup asking the user to confirm the action to prevent accidental
+logout.
+
+
+
+
+13
+
+Chrome Version 145.0.7632.160, Firefox, Microsoft Edge
+
+
+Functional / Feature Availability
+
+
+Register Page
+
+
+The Confirm Password input field is missing on the Register page. Without a confirmation field, users cannot verify whether the entered password matches their intended password, which may lead to incorrect password entry during account creation.
+
+
+https://prnt.sc/TvQ59sC1LXws
+
+
+
+
+14
+
+
+Chrome Version 145.0.7632.160, Firefox, Microsoft Edge
+
+
+UI/ UX
+
+The password input field does not contain a “Show/Hide password (eye) Authentication (Login /      icon”, preventing users from viewing the entered password.
+Sign Up)	This reduces usability and may cause login errors if the password is mistyped.
+
+
+https://prnt.sc/XIr_acY1a1bg
+
+
+
+
+15
+
+
+16
+
+
+Chrome Version 145.0.7632.160, Firefox, Microsoft Edge
+
+Chrome Version 145.0.7632.160, Firefox, Microsoft Edge
+
+
+UI/ UX
+
+
+UI/ UX
+
+
+Register Header
+
+
+Footer >> Download astruXo
+
+The Login & Register header background container color is white, which makes the selected or active area less noticeable to users.
+Due to the lack of contrast between the background and the active element, users may find it difficult to identify the currently selected section.
+
+The “Download astruXo” button/icon positioned at the bottom-right side overlaps the background text in the footer section.
+Due to this overlap, the footer content becomes partially hidden and difficult to read.
+
+
+https://prnt.sc/PieWIU215UPH
+
+
+https://jam.dev/c/e5048e7b-a36e-406e-b3bd-03bd02168125
+
+
+
+
+17
+
+Chrome Version 145.0.7632.160, Firefox, Microsoft Edge
+
+
+UI/ UX	Navigation >> Streams      The Stream pop-up icon overlaps with the floating icon on the “Sign In”	https://prnt.sc/HZiOniDZ0fcm
+button.
+
+
+
+
+18
+
+Chrome Version 145.0.7632.160, Firefox, Microsoft Edge
+
+
+UI/ UX
+
+
+When the user scrolls the page upward, the navigation/header section
+gets hidden under the top screen edge and is not visible anymore. The          https://kommodo.ai/recordings/2Nwc3J7dGcCh3z2BIx5k? navigation bar should remain static or sticky so users can easily access	onlyRecording=1
+menu options while scrolling through the page.
+
+
+
+
+19
+
+
+Chrome Version 145.0.7632.160, Firefox, Microsoft Edge
+
+
+UI/ UX	Download astruXo
+
+When the user clicks on the “Download astruXo” button, a pop-up appears showing “Install APK”, but the button text previously indicates “Download astruXo”. This creates inconsistency and may confuse users, as it is not clearly mentioned that the download is for an APK installationfile.
+The popup text should clearly indicate “Download astruXo APK” or “Install astruXo APK” for better clarity and user understanding.
+
+
+https://jam.dev/c/dfe4fc74-2cc0-408c-8c06-7eabb6aaebda
+Sr. No.	Device	Bug Type	Module	Descriptions	Attachments ( ScreenShots / Video )	Developer Comments        QA Comments
+https://jam.dev/c/00190e78-e67e-4e44-bce1-713c4e5df10d
+https://drive.google.
+com/file/d/1nZUpQBf_R81nR1PTXFcSAyTJTL8alyX-/view?
+usp=drive_link
+hambuger menu >>legal
+& Info
+
+
+20
+
+
+Chrome Version 145.0.7632.160, Firefox, Microsoft Edge
+
+The website displays mixed languages within the interface. Most of the content is in English (e.g., “Welcome to astruXo”), while the footer shows Spanish text such as “¡Hay más contenido esperándote!”.
+UI Consistency	Language / Localization		https://jam.dev/c/2c99769f-b1dc-4e5d-80dc-44f5f46fb22c Additionally, when the user clicks on the search bar, the placeholder or
+text appears in Spanish even when the language is set to English. This
+creates inconsistency in the user interface and may confuse users.
+
+
+
+
+21
+
+
+22
+
+
+23
+
+
+Chrome Version 145.0.7632.160, Firefox, Microsoft Edge
+
+Chrome Version 145.0.7632.160, Firefox, Microsoft Edge
+
+Chrome Version 145.0.7632.160, Firefox, Microsoft Edge
+
+When the user clicks on the language dropdown, the selected language text is not clearly visible due to the black background color applied in
+UI/ UX	Language Dropdown        the dropdown menu.
+The text only becomes visible when the user hovers the mouse cursor over the option. This creates poor visibility and affects usability.
+
+On The Go Live content , the stream-related icons overlap with each UI/ UX	Navigation >> Go live        other, causing UI clutter and making the elements difficult to
+distinguish.
+
+Navigation >> Legal &       When the user clicks on the email link (info@astruXo.net Info (Community	) displayed, it does not perform any action.
+UI/ UX	Guideline , Terms Of
+Service , Privacy Policy ,     Ideally, clicking the email address should open the user's default email About Us )	client (mail application) to compose a new email.
+
+
+https://kommodo.ai/recordings/jnJ4tfFuyuf8GNqWl9bf? onlyRecording=1
+
+
+https://prnt.sc/oTfec3qCBbR6
+
+
+https://jam.dev/c/e02a6808-a0a9-44fe-9972-73bbadeac8df
+
+
+
+
+24
+
+
+Chrome Version 145.0.7632.160, Firefox, Microsoft Edge
+
+On the Home page, there is a btn  labeled “Publicar”, but it does not clearly indicate the actual purpose or content of the section.
+UI/ UX	Home >> Publicar		https://prnt.sc/zqnZY1IHrrPI The section should use a clear and consistent label such as “Post”,
+“Create Post”, or “Publish Content” for better user understanding.
+
+
+
+
+25
+
+
+Chrome Version 145.0.7632.160, Firefox, Microsoft Edge
+
+
+UI/ UX	Navigation / Menu
+
+When the user navigates to any module or section of the website, the navigation menu item appears selected but does not have a clear visual indicator, which creates confusion about whether the section is actually selected or not. There is no proper highlight such as a distinct color change, underline, or active state to clearly indicate the currently active module.
+
+
+
+
+26
+
+
+Chrome Version 145.0.7632.160, Firefox, Microsoft Edge
+
+When a user likes a post and another user clicks on the like count to view the list of users who liked the post, the usernames become hard to
+UI/ UX	Feed – Post Like Details     read when hovering the mouse cursor over them. This happens because       https://jam.dev/c/4b8cf42d-843f-4982-a6e9-9af9012f90c7 the hover background color (black) blends with the text color, reducing
+visibility and readability.
+
+
+
+
+27
+
+Chrome Version 145.0.7632.160, Firefox, Microsoft Edge
+
+
+UI/ UX
+
+
+Footer >> All right Reserved
+
+
+In the footer section, the “All Rights Reserved” text is displayed in a very small font size, making it less noticeable and difficult to read. The font size should be increased to improve readability and visibility for users.
+
+
+https://prnt.sc/JmPBoYLyZJ7T
+
+
+
+
+28
+
+Chrome Version 145.0.7632.160, Firefox, Microsoft Edge
+
+
+UI/ UX
+
+
+In the Live Go section, the header “Moderation & Privacy” and its Live Go >> Moderation &    paragraph text are not easily visible because the text color is white,
+Privacy	which blends with the background. This makes the content difficult for users to read.
+
+
+https://prnt.sc/nCpZRs_hpyKJ
+
+
+
+
+29	Vivo V25	UI/ UX	Hamburger menu
+
+When the user clicks on the Menu button, the menu items appear but the text and buttons are not properly aligned within the container. Some elements appear too close to the edge of the container box, causing the content to look cramped and poorly spaced.
+
+
+
+
+30	Vivo V25
+
+
+Navigation / Functional  Issue
+
+When the user clicks on links such as Community Details, Terms &
+Conditions, Privacy Policy, or About Us, the page does not open from	https://drive.google.
+the top of the section. Instead, the page loads in the middle or near the       com/file/d/1hjpVvmPwvO60F8z4BhLvrjSxyHhKlWZ_/view bottom of the content, which may cause users to miss the beginning of	?usp=drive_link
+the information.
+
+
+
+
+31	Vivo V25	UI/ UX
+
+
+Footer >> Download astruXO
+
+In the mobile view, the “Download astruXo” floating button overlaps and hides the background content or information on the page. Due to this overlap, some content becomes partially hidden and difficult for users to read or interact with.
+
+
+https://drive.google. com/file/d/1Snx7Uc0wSdorLyiEEvFSicq9xN1NhKiM/view? usp=drive_link
+
+
+
+When a user is in a live session and sends a gift to the live host, after 32	Vivo V25	UI/ UX	Send a gift >> Send btn      clicking the Send button there is no visible highlight, animation, or
+feedback indicating
+
+https://drive.google. com/file/d/1b6ey8_9m3ZqngBCwr97XzrPwJFsW3JP3/view ?usp=drive_link
+Test Execution Summary
+
+
+Test ID	Application
+PT-001	astruxo.net
+
+Environment
+Production
+
+Tool Used
+Apache JMeter
+
+Test Type
+API Load Test
+
+Date	Tester
+14-Mar-2026	QA
+
+
+Test Configuration
+
+
+Parameter API Endpoint HTTP Method
+Query Parameters Protocol
+Number of Threads (Users) Ramp-up Period Loop Count
+Total Requests Executed Test Duration
+Headers Used
+
+Value https://astruxo.net/api/feed GET
+limit=20, offset=20 HTTPS 1000 200 sec 5 1937
+~1 min
+Accept, Referer, User-Agent
+
+
+
+Performance Results
+
+
+Metric Total Requests
+Successful Requests Failed Requests Error Percentage
+Average Response Time Minimum Response Time Maximum Response Time Standard Deviation Throughput Received KB/sec Sent KB/sec
+Avg Response Size
+
+Value 1937 1928 9
+0.46 % 612 ms 60 ms 7166 ms 525 ms
+24.7 requests/sec 296.03 3.37
+12.2 KB
+
+
+Error Details
+
+
+Error Type
+
+java.net.SocketException
+
+
+Socket closed
+
+Occurrence
+
+9
+
+
+9
+
+Description
+Connection closed by server
+Server terminated connection before response
+
+
+Example failure thread:
+
+
+Thread Name
+Thread Group 1-385
+
+Issue
+Socket closed
+
+
+Observations
+
+
+Observation ID
+
+OBS-01
+
+OBS-02
+
+OBS-03
+
+OBS-04
+
+Description
+API handled majority of requests successfully
+Average response time remained under 1 second
+Very small failure rate (0.46%) observed
+Some requests failed due to socket connection closure
+
+
+Conclusion
+
+
+Status Test Outcome
+Server Stability
+Error Threshold
+
+Result PASSED
+Stable under tested load
+Within acceptable limit (<1%)
+Recommendation
+
+Increase load gradually to test higher capacity
+
+
+Graph Data
+
+Metric	Value Avg Response Time                                                  612 Min Response Time                                                   60 Max Response Time                                                 7166
+Throughput                                                          24.7 Error %                                                              0.46
