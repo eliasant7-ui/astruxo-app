@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/favicon.png?v=20260308-1734" />
+    <link rel="apple-touch-icon" href="/logo.png?v=20260308-1734" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="astruXo" />
+    <meta name="theme-color" content="#6366f1" />
+    <meta name="description" content="Social streaming platform - Share, stream, and connect" />
+    
+    <!-- Cache Control - Force reload after bug fix -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://astruxo.net/" />
+    <meta property="og:title" content="astruXo - Social Streaming Platform" />
+    <meta property="og:description" content="Share, stream, and connect with the world. Join astruXo for live streaming, social posts, and real-time interactions." />
+    <meta property="og:image" content="https://astruxo.net/icon-512.png" />
+    <meta property="og:image:width" content="512" />
+    <meta property="og:image:height" content="512" />
+    <meta property="og:image:alt" content="astruXo Logo" />
+    <meta property="og:site_name" content="astruXo" />
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:url" content="https://astruxo.net/" />
+    <meta name="twitter:title" content="astruXo - Social Streaming Platform" />
+    <meta name="twitter:description" content="Share, stream, and connect with the world. Join astruXo for live streaming, social posts, and real-time interactions." />
+    <meta name="twitter:image" content="https://astruxo.net/icon-512.png" />
+    <meta name="twitter:image:alt" content="astruXo Logo" />
+    
+    <!-- WhatsApp -->
+    <meta property="og:image:type" content="image/png" />
+    
+    <link rel="manifest" href="/manifest.json" />
+    <title>astruXo</title>
+  </head>
+  <body class="fs-unmask-airo-app-builder">
+    <div id="app" class="fs-unmask-airo-app-builder"></div>
+    
+    <!-- CRITICAL: Force cache bust ALWAYS - No Service Worker caching -->
+    <script>
+      (function() {
+        const BUILD_TIMESTAMP = '20260304-083900'; // Update on every build
+        
+        console.log('🔄 Cache Buster Active - Build:', BUILD_TIMESTAMP);
+        
+        // ALWAYS unregister service workers on load
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.getRegistrations().then(function(registrations) {
+            if (registrations.length > 0) {
+              console.log('🧹 Removing', registrations.length, 'service worker(s)...');
+              registrations.forEach(function(registration) {
+                registration.unregister();
+              });
+            }
+          });
+        }
+        
+        // ALWAYS clear caches on load
+        if ('caches' in window) {
+          caches.keys().then(function(cacheNames) {
+            if (cacheNames.length > 0) {
+              console.log('🧹 Clearing', cacheNames.length, 'cache(s)...');
+              cacheNames.forEach(function(cacheName) {
+                caches.delete(cacheName);
+              });
+            }
+          });
+        }
+        
+        // Add timestamp to all script imports to force fresh download
+        window.__BUILD_TIMESTAMP__ = BUILD_TIMESTAMP;
+      })();
+    </script>
+    
+    <script type="module">
+      if (import.meta.env.MODE === 'development') {
+        import('/dev-tools/src/error-client.ts')
+      }
+      import('/src/main.tsx')
+    </script>
+    <script src="/analytics.js"></script>
+  </body>
+</html>

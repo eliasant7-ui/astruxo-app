@@ -1,0 +1,1 @@
+ALTER TABLE `private_stream_access` MODIFY COLUMN `gift_id` int;

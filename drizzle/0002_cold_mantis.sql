@@ -1,0 +1,1 @@
+ALTER TABLE `coin_transactions` ADD `stripe_session_id` varchar(255);

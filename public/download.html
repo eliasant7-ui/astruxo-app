@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download astruXo Source Code</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #666;
+            font-size: 1.2em;
+            margin-bottom: 30px;
+        }
+        .download-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 40px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 1.3em;
+            font-weight: bold;
+            margin: 20px 0;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+        .info-box {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .info-box h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        .info-box ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .info-box li {
+            padding: 5px 0;
+            color: #555;
+        }
+        .info-box li:before {
+            content: "✅ ";
+            margin-right: 10px;
+        }
+        .file-size {
+            display: inline-block;
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .docs-link {
+            display: inline-block;
+            color: #667eea;
+            text-decoration: none;
+            margin: 10px 15px 10px 0;
+            font-weight: 500;
+        }
+        .docs-link:hover {
+            text-decoration: underline;
+        }
+        .warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎥 astruXo Source Code</h1>
+        <p class="subtitle">Complete Real-Time Streaming & Social Platform</p>
+        
+        <a href="/ASTRUXO_COMPLETE_SOURCE_CODE.tar.gz" class="download-btn" download>
+            📦 Download Complete Source Code
+        </a>
+        
+        <div class="file-size">Size: 7.1 MB</div>
+        
+        <div class="info-box">
+            <h3>📦 What's Included</h3>
+            <ul>
+                <li>Complete Frontend (React 19 + TypeScript + Vite)</li>
+                <li>Complete Backend (Express.js + API routes)</li>
+                <li>Livestream System (Agora RTC + Socket.IO)</li>
+                <li>Database Schema (Drizzle ORM + MySQL)</li>
+                <li>All Configuration Files</li>
+                <li>Environment Template (.env.example)</li>
+                <li>Database Migrations</li>
+                <li>40+ UI Components (shadcn)</li>
+                <li>Authentication System (Firebase)</li>
+                <li>Payment Integration (Stripe)</li>
+                <li>Moderation System</li>
+                <li>Social Features</li>
+                <li>Admin Dashboard</li>
+                <li>Multi-Language Support</li>
+            </ul>
+        </div>
+
+        <div class="info-box">
+            <h3>🚀 Quick Start</h3>
+            <ul>
+                <li>Extract the archive</li>
+                <li>Run: npm install</li>
+                <li>Configure .env file</li>
+                <li>Run: npm run db:migrate</li>
+                <li>Run: npm run dev</li>
+            </ul>
+        </div>
+
+        <div class="warning">
+            <strong>⚠️ Important:</strong> This archive excludes node_modules and dist folders. 
+            Run <code>npm install</code> after extraction to install dependencies.
+        </div>
+
+        <div style="margin-top: 30px;">
+            <h3 style="color: #667eea; margin-bottom: 15px;">📚 Documentation</h3>
+            <a href="/DOWNLOAD_INSTRUCTIONS.md" class="docs-link" target="_blank">📖 Setup Instructions</a>
+            <a href="/GITHUB_UPLOAD_GUIDE.md" class="docs-link" target="_blank">📤 GitHub Upload Guide</a>
+            <a href="/README_GITHUB.md" class="docs-link" target="_blank">📝 README for GitHub</a>
+        </div>
+
+        <div style="margin-top: 40px; padding-top: 20px; border-top: 2px solid #eee; text-align: center; color: #999;">
+            <p>astruXo Platform • All Rights Reserved</p>
+            <p style="margin-top: 10px; font-size: 0.9em;">
+                Total: ~15,000+ lines of production-ready code
+            </p>
+        </div>
+    </div>
+</body>
+</html>

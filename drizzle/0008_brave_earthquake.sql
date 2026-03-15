@@ -1,0 +1,1 @@
+ALTER TABLE `users` ADD `live_confirmed_at` timestamp;

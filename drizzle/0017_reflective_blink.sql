@@ -1,0 +1,1 @@
+ALTER TABLE `streams` ADD `current_playlist_index` int DEFAULT 0;
