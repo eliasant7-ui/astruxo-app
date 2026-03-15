@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "start":"npm run db:migrate && node dist/server.bundle.cjs",
+    "start": "npm run db:migrate && node dist/server.bundle.cjs",
     "build": "vite build && node bundle.js",
     "build:vite": "vite build",
     "bundle": "node bundle.js",
@@ -26,7 +26,6 @@
     "migrate:avatars": "npx tsx src/server/db/migrate-avatars.ts"
   },
   "dependencies": {
-    "@vitejs/plugin-react": "^4.3.4",
     "@babel/core": "^7.26.4",
     "@babel/types": "^7.26.3",
     "@dr.pogodin/react-helmet": "^3.0.5",
@@ -64,6 +63,7 @@
     "@tanstack/react-query": "^5.62.11",
     "@tanstack/react-query-devtools": "^5.62.11",
     "@types/multer": "^2.0.0",
+    "@vitejs/plugin-react": "^4.3.4",
     "agora-rtc-react": "^2.5.1",
     "agora-rtc-sdk-ng": "^4.24.2",
     "agora-token": "^2.0.5",
@@ -75,7 +75,7 @@
     "dotenv-local": "^1.0.2",
     "drizzle-orm": "^0.44.7",
     "embla-carousel-react": "^8.6.0",
-    "express": "^5.1.0",
+    "express": "^5.2.1",
     "firebase": "^12.9.0",
     "firebase-admin": "^13.7.0",
     "html-to-image": "^1.11.11",
@@ -125,7 +125,6 @@
     "@types/uuid": "^10.0.0",
     "@typescript-eslint/eslint-plugin": "^8.18.2",
     "@typescript-eslint/parser": "^8.18.2",
-    
     "@vitest/ui": "^3.2.4",
     "autoprefixer": "^10.4.20",
     "baseline-browser-mapping": "^2.10.0",
@@ -135,7 +134,6 @@
     "eslint-plugin-react": "^7.37.2",
     "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-react-refresh": "^0.4.14",
-    "express": "^5.1.0",
     "postcss": "^8.4.49",
     "prettier": "^3.4.2",
     "tailwindcss": "^3.4.17",
