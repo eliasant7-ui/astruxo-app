@@ -4,7 +4,7 @@
  * Phase 2: Social Features (Posts, Comments, Likes, Media)
  */
 
-import { pgTable, integer, varchar, text, decimal, timestamp, boolean, pgIndex, json } from 'drizzle-orm/pg-core';
+import { pgTable, integer, varchar, text, decimal, timestamp, boolean, index, json } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
 // ============================================
@@ -31,10 +31,10 @@ export const users = pgTable('users', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().onUpdateNow().notNull(),
 }, (table) => ({
-  firebaseUidIdx: pgIndex('firebase_uid_idx').on(table.firebaseUid),
-  usernameIdx: pgIndex('username_idx').on(table.username),
-  isLiveIdx: pgIndex('is_live_idx').on(table.isLive),
-  roleIdx: pgIndex('role_idx').on(table.role),
+  firebaseUidIdx: index('firebase_uid_idx').on(table.firebaseUid),
+  usernameIdx: index('username_idx').on(table.username),
+  isLiveIdx: index('is_live_idx').on(table.isLive),
+  roleIdx: index('role_idx').on(table.role),
 }));
 
 // ============================================
@@ -46,9 +46,9 @@ export const follows = pgTable('follows', {
   followingId: integer('following_id').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 }, (table) => ({
-  followerIdx: pgIndex('follower_idx').on(table.followerId),
-  followingIdx: pgIndex('following_idx').on(table.followingId),
-  uniqueFollow: pgIndex('unique_follow').on(table.followerId, table.followingId),
+  followerIdx: index('follower_idx').on(table.followerId),
+  followingIdx: index('following_idx').on(table.followingId),
+  uniqueFollow: index('unique_follow').on(table.followerId, table.followingId),
 }));
 
 // ============================================
@@ -79,12 +79,12 @@ export const streams = pgTable('streams', {
   endedAt: timestamp('ended_at'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 }, (table) => ({
-  userIdIdx: pgIndex('user_id_idx').on(table.userId),
-  slugIdx: pgIndex('slug_idx').on(table.slug),
-  statusIdx: pgIndex('status_idx').on(table.status),
-  startedAtIdx: pgIndex('started_at_idx').on(table.startedAt),
-  isPrivateIdx: pgIndex('is_private_idx').on(table.isPrivate),
-  isSystemStreamIdx: pgIndex('is_system_stream_idx').on(table.isSystemStream),
+  userIdIdx: index('user_id_idx').on(table.userId),
+  slugIdx: index('slug_idx').on(table.slug),
+  statusIdx: index('status_idx').on(table.status),
+  startedAtIdx: index('started_at_idx').on(table.startedAt),
+  isPrivateIdx: index('is_private_idx').on(table.isPrivate),
+  isSystemStreamIdx: index('is_system_stream_idx').on(table.isSystemStream),
 }));
 
 // ============================================
@@ -97,8 +97,8 @@ export const chatMessages = pgTable('chat_messages', {
   message: text('message').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 }, (table) => ({
-  streamIdIdx: pgIndex('stream_id_idx').on(table.streamId),
-  createdAtIdx: pgIndex('created_at_idx').on(table.createdAt),
+  streamIdIdx: index('stream_id_idx').on(table.streamId),
+  createdAtIdx: index('created_at_idx').on(table.createdAt),
 }));
 
 // ============================================
@@ -111,8 +111,8 @@ export const streamEntryPayments = pgTable('stream_entry_payments', {
   amountPaid: integer('amount_paid').notNull(), // Coins paid for entry
   paidAt: timestamp('paid_at').defaultNow().notNull(),
 }, (table) => ({
-  streamUserIdx: pgIndex('stream_user_idx').on(table.streamId, table.userId),
-  streamIdIdx: pgIndex('stream_id_idx').on(table.streamId),
+  streamUserIdx: index('stream_user_idx').on(table.streamId, table.userId),
+  streamIdIdx: index('stream_id_idx').on(table.streamId),
 }));
 
 // ============================================
@@ -128,8 +128,8 @@ export const gifts = pgTable('gifts', {
   sortOrder: integer('sort_order').default(0).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 }, (table) => ({
-  isActiveIdx: pgIndex('is_active_idx').on(table.isActive),
-  sortOrderIdx: pgIndex('sort_order_idx').on(table.sortOrder),
+  isActiveIdx: index('is_active_idx').on(table.isActive),
+  sortOrderIdx: index('sort_order_idx').on(table.sortOrder),
 }));
 
 // ============================================
@@ -145,10 +145,10 @@ export const giftTransactions = pgTable('gift_transactions', {
   message: text('message'), // Optional message with gift
   createdAt: timestamp('created_at').defaultNow().notNull(),
 }, (table) => ({
-  senderIdx: pgIndex('sender_idx').on(table.senderId),
-  receiverIdx: pgIndex('receiver_idx').on(table.receiverId),
-  streamIdx: pgIndex('stream_idx').on(table.streamId),
-  createdAtIdx: pgIndex('created_at_idx').on(table.createdAt),
+  senderIdx: index('sender_idx').on(table.senderId),
+  receiverIdx: index('receiver_idx').on(table.receiverId),
+  streamIdx: index('stream_idx').on(table.streamId),
+  createdAtIdx: index('created_at_idx').on(table.createdAt),
 }));
 
 // ============================================
@@ -164,9 +164,9 @@ export const coinTransactions = pgTable('coin_transactions', {
   stripeSessionId: varchar('stripe_session_id', { length: 255 }), // Stripe checkout session ID
   createdAt: timestamp('created_at').defaultNow().notNull(),
 }, (table) => ({
-  userIdIdx: pgIndex('user_id_idx').on(table.userId),
-  typeIdx: pgIndex('type_idx').on(table.type),
-  createdAtIdx: pgIndex('created_at_idx').on(table.createdAt),
+  userIdIdx: index('user_id_idx').on(table.userId),
+  typeIdx: index('type_idx').on(table.type),
+  createdAtIdx: index('created_at_idx').on(table.createdAt),
 }));
 
 // ============================================
@@ -187,10 +187,10 @@ export const posts = pgTable('posts', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().onUpdateNow().notNull(),
 }, (table) => ({
-  userIdIdx: pgIndex('user_id_idx').on(table.userId),
-  streamIdIdx: pgIndex('stream_id_idx').on(table.streamId),
-  createdAtIdx: pgIndex('created_at_idx').on(table.createdAt),
-  mediaTypeIdx: pgIndex('media_type_idx').on(table.mediaType),
+  userIdIdx: index('user_id_idx').on(table.userId),
+  streamIdIdx: index('stream_id_idx').on(table.streamId),
+  createdAtIdx: index('created_at_idx').on(table.createdAt),
+  mediaTypeIdx: index('media_type_idx').on(table.mediaType),
 }));
 
 // ============================================
@@ -207,10 +207,10 @@ export const comments = pgTable('comments', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().onUpdateNow().notNull(),
 }, (table) => ({
-  postIdIdx: pgIndex('post_id_idx').on(table.postId),
-  userIdIdx: pgIndex('user_id_idx').on(table.userId),
-  parentIdIdx: pgIndex('parent_id_idx').on(table.parentId),
-  createdAtIdx: pgIndex('created_at_idx').on(table.createdAt),
+  postIdIdx: index('post_id_idx').on(table.postId),
+  userIdIdx: index('user_id_idx').on(table.userId),
+  parentIdIdx: index('parent_id_idx').on(table.parentId),
+  createdAtIdx: index('created_at_idx').on(table.createdAt),
 }));
 
 // ============================================
@@ -222,9 +222,9 @@ export const likes = pgTable('likes', {
   userId: integer('user_id').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 }, (table) => ({
-  postIdIdx: pgIndex('post_id_idx').on(table.postId),
-  userIdIdx: pgIndex('user_id_idx').on(table.userId),
-  uniqueLike: pgIndex('unique_like').on(table.postId, table.userId),
+  postIdIdx: index('post_id_idx').on(table.postId),
+  userIdIdx: index('user_id_idx').on(table.userId),
+  uniqueLike: index('unique_like').on(table.postId, table.userId),
 }));
 
 // ============================================
@@ -236,9 +236,9 @@ export const commentLikes = pgTable('comment_likes', {
   userId: integer('user_id').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 }, (table) => ({
-  commentIdIdx: pgIndex('comment_id_idx').on(table.commentId),
-  userIdIdx: pgIndex('user_id_idx').on(table.userId),
-  uniqueLike: pgIndex('unique_comment_like').on(table.commentId, table.userId),
+  commentIdIdx: index('comment_id_idx').on(table.commentId),
+  userIdIdx: index('user_id_idx').on(table.userId),
+  uniqueLike: index('unique_comment_like').on(table.commentId, table.userId),
 }));
 
 // ============================================
@@ -369,10 +369,10 @@ export const reports = pgTable('reports', {
   reviewedAt: timestamp('reviewed_at'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 }, (table) => ({
-  reporterIdx: pgIndex('reporter_idx').on(table.reporterUserId),
-  reportedUserIdx: pgIndex('reported_user_idx').on(table.reportedUserId),
-  reportedPostIdx: pgIndex('reported_post_idx').on(table.reportedPostId),
-  statusIdx: pgIndex('status_idx').on(table.status),
+  reporterIdx: index('reporter_idx').on(table.reporterUserId),
+  reportedUserIdx: index('reported_user_idx').on(table.reportedUserId),
+  reportedPostIdx: index('reported_post_idx').on(table.reportedPostId),
+  statusIdx: index('status_idx').on(table.status),
 }));
 
 // ============================================
@@ -388,10 +388,10 @@ export const moderationLogs = pgTable('moderation_logs', {
   reason: text('reason'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 }, (table) => ({
-  adminIdx: pgIndex('admin_idx').on(table.adminId),
-  actionTypeIdx: pgIndex('action_type_idx').on(table.actionType),
-  targetUserIdx: pgIndex('target_user_idx').on(table.targetUserId),
-  createdAtIdx: pgIndex('created_at_idx').on(table.createdAt),
+  adminIdx: index('admin_idx').on(table.adminId),
+  actionTypeIdx: index('action_type_idx').on(table.actionType),
+  targetUserIdx: index('target_user_idx').on(table.targetUserId),
+  createdAtIdx: index('created_at_idx').on(table.createdAt),
 }));
 
 // Relations for reports
@@ -447,9 +447,9 @@ export const activeConnections = pgTable('active_connections', {
   connectedAt: timestamp('connected_at').defaultNow().notNull(),
   lastSeenAt: timestamp('last_seen_at').defaultNow().onUpdateNow().notNull(),
 }, (table) => ({
-  socketIdIdx: pgIndex('socket_id_idx').on(table.socketId),
-  userIdIdx: pgIndex('user_id_idx').on(table.userId),
-  connectedAtIdx: pgIndex('connected_at_idx').on(table.connectedAt),
+  socketIdIdx: index('socket_id_idx').on(table.socketId),
+  userIdIdx: index('user_id_idx').on(table.userId),
+  connectedAtIdx: index('connected_at_idx').on(table.connectedAt),
 }));
 
 export const activeConnectionsRelations = relations(activeConnections, ({ one }) => ({
@@ -475,10 +475,10 @@ export const userSessions = pgTable('user_sessions', {
   endedAt: timestamp('ended_at'),
   durationSeconds: integer('duration_seconds').default(0),
 }, (table) => ({
-  userIdIdx: pgIndex('user_id_idx').on(table.userId),
-  startedAtIdx: pgIndex('started_at_idx').on(table.startedAt),
-  deviceTypeIdx: pgIndex('device_type_idx').on(table.deviceType),
-  countryIdx: pgIndex('country_idx').on(table.country),
+  userIdIdx: index('user_id_idx').on(table.userId),
+  startedAtIdx: index('started_at_idx').on(table.startedAt),
+  deviceTypeIdx: index('device_type_idx').on(table.deviceType),
+  countryIdx: index('country_idx').on(table.country),
 }));
 
 export const userSessionsRelations = relations(userSessions, ({ one }) => ({
@@ -499,9 +499,9 @@ export const pwaInstallations = pgTable('pwa_installations', {
   userAgent: text('user_agent'),
   installedAt: timestamp('installed_at').defaultNow().notNull(),
 }, (table) => ({
-  userIdIdx: pgIndex('user_id_idx').on(table.userId),
-  installedAtIdx: pgIndex('installed_at_idx').on(table.installedAt),
-  platformIdx: pgIndex('platform_idx').on(table.platform),
+  userIdIdx: index('user_id_idx').on(table.userId),
+  installedAtIdx: index('installed_at_idx').on(table.installedAt),
+  platformIdx: index('platform_idx').on(table.platform),
 }));
 
 export const pwaInstallationsRelations = relations(pwaInstallations, ({ one }) => ({
@@ -519,9 +519,9 @@ export const streamModerators = pgTable('stream_moderators', {
   assignedBy: integer('assigned_by').notNull(), // Broadcaster user ID
   assignedAt: timestamp('assigned_at').defaultNow().notNull(),
 }, (table) => ({
-  streamIdIdx: pgIndex('stream_id_idx').on(table.streamId),
-  userIdIdx: pgIndex('user_id_idx').on(table.userId),
-  uniqueStreamUser: pgIndex('unique_stream_user').on(table.streamId, table.userId),
+  streamIdIdx: index('stream_id_idx').on(table.streamId),
+  userIdIdx: index('user_id_idx').on(table.userId),
+  uniqueStreamUser: index('unique_stream_user').on(table.streamId, table.userId),
 }));
 
 // Stream Bans - Users banned from specific streams
@@ -534,9 +534,9 @@ export const streamBans = pgTable('stream_bans', {
   banType: varchar('ban_type', { length: 20 }).default('kick').notNull(), // 'kick' (temporary), 'ban' (permanent)
   bannedAt: timestamp('banned_at').defaultNow().notNull(),
 }, (table) => ({
-  streamIdIdx: pgIndex('stream_id_idx').on(table.streamId),
-  userIdIdx: pgIndex('user_id_idx').on(table.userId),
-  uniqueStreamUser: pgIndex('unique_stream_user').on(table.streamId, table.userId),
+  streamIdIdx: index('stream_id_idx').on(table.streamId),
+  userIdIdx: index('user_id_idx').on(table.userId),
+  uniqueStreamUser: index('unique_stream_user').on(table.streamId, table.userId),
 }));
 
 // Private Stream Access - Users who paid to enter private stream
@@ -547,9 +547,9 @@ export const privateStreamAccess = pgTable('private_stream_access', {
   giftId: integer('gift_id'), // Gift sent to gain access (nullable for entry price streams)
   grantedAt: timestamp('granted_at').defaultNow().notNull(),
 }, (table) => ({
-  streamIdIdx: pgIndex('stream_id_idx').on(table.streamId),
-  userIdIdx: pgIndex('user_id_idx').on(table.userId),
-  uniqueStreamUser: pgIndex('unique_stream_user').on(table.streamId, table.userId),
+  streamIdIdx: index('stream_id_idx').on(table.streamId),
+  userIdIdx: index('user_id_idx').on(table.userId),
+  uniqueStreamUser: index('unique_stream_user').on(table.streamId, table.userId),
 }));
 
 // Deleted Messages - Track deleted messages for moderation
@@ -562,8 +562,8 @@ export const deletedMessages = pgTable('deleted_messages', {
   deletedBy: integer('deleted_by').notNull(), // Moderator/Broadcaster user ID
   deletedAt: timestamp('deleted_at').defaultNow().notNull(),
 }, (table) => ({
-  streamIdIdx: pgIndex('stream_id_idx').on(table.streamId),
-  messageIdIdx: pgIndex('message_id_idx').on(table.messageId),
+  streamIdIdx: index('stream_id_idx').on(table.streamId),
+  messageIdIdx: index('message_id_idx').on(table.messageId),
 }));
 
 export const streamModeratorsRelations = relations(streamModerators, ({ one }) => ({
@@ -637,11 +637,11 @@ export const siteVisits = pgTable('site_visits', {
   countryCode: varchar('country_code', { length: 2 }), // ISO 2-letter country code (e.g., 'US', 'ES')
   visitedAt: timestamp('visited_at').defaultNow().notNull(),
 }, (table) => ({
-  pageIdx: pgIndex('page_idx').on(table.page),
-  userIdIdx: pgIndex('user_id_idx').on(table.userId),
-  sessionIdIdx: pgIndex('session_id_idx').on(table.sessionId),
-  visitedAtIdx: pgIndex('visited_at_idx').on(table.visitedAt),
-  countryCodeIdx: pgIndex('country_code_idx').on(table.countryCode),
+  pageIdx: index('page_idx').on(table.page),
+  userIdIdx: index('user_id_idx').on(table.userId),
+  sessionIdIdx: index('session_id_idx').on(table.sessionId),
+  visitedAtIdx: index('visited_at_idx').on(table.visitedAt),
+  countryCodeIdx: index('country_code_idx').on(table.countryCode),
 }));
 
 // ============================================
@@ -659,9 +659,9 @@ export const botAccounts = pgTable('bot_accounts', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().onUpdateNow().notNull(),
 }, (table) => ({
-  userIdIdx: pgIndex('user_id_idx').on(table.userId),
-  botTypeIdx: pgIndex('bot_type_idx').on(table.botType),
-  isActiveIdx: pgIndex('is_active_idx').on(table.isActive),
+  userIdIdx: index('user_id_idx').on(table.userId),
+  botTypeIdx: index('bot_type_idx').on(table.botType),
+  isActiveIdx: index('is_active_idx').on(table.isActive),
 }));
 
 // Content Templates - Pre-written content for bots to post
@@ -675,8 +675,8 @@ export const contentTemplates = pgTable('content_templates', {
   lastUsedAt: timestamp('last_used_at'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 }, (table) => ({
-  categoryIdx: pgIndex('category_idx').on(table.category),
-  isActiveIdx: pgIndex('is_active_idx').on(table.isActive),
+  categoryIdx: index('category_idx').on(table.category),
+  isActiveIdx: index('is_active_idx').on(table.isActive),
 }));
 
 // Comment Templates - Simple engagement comments
@@ -689,8 +689,8 @@ export const commentTemplates = pgTable('comment_templates', {
   lastUsedAt: timestamp('last_used_at'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 }, (table) => ({
-  sentimentIdx: pgIndex('sentiment_idx').on(table.sentiment),
-  isActiveIdx: pgIndex('is_active_idx').on(table.isActive),
+  sentimentIdx: index('sentiment_idx').on(table.sentiment),
+  isActiveIdx: index('is_active_idx').on(table.isActive),
 }));
 
 // Bootstrap Activity Config - Global settings
@@ -718,9 +718,9 @@ export const activityLog = pgTable('activity_log', {
   errorMessage: text('error_message'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 }, (table) => ({
-  activityTypeIdx: pgIndex('activity_type_idx').on(table.activityType),
-  botAccountIdIdx: pgIndex('bot_account_id_idx').on(table.botAccountId),
-  createdAtIdx: pgIndex('created_at_idx').on(table.createdAt),
+  activityTypeIdx: index('activity_type_idx').on(table.activityType),
+  botAccountIdIdx: index('bot_account_id_idx').on(table.botAccountId),
+  createdAtIdx: index('created_at_idx').on(table.createdAt),
 }));
 
 // Relations
