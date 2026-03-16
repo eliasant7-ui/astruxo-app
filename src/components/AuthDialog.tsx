@@ -32,6 +32,8 @@ export default function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
   // Login form state
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
+  const [loginAttempts, setLoginAttempts] = useState(0);
+  const [lockoutUntil, setLockoutUntil] = useState<number | null>(null);
 
   // Register form state
   const [registerEmail, setRegisterEmail] = useState('');
@@ -55,6 +57,14 @@ export default function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
     setLoading(true);
     setError(null);
 
+    // Check if account is locked out
+    if (lockoutUntil && Date.now() < lockoutUntil) {
+      const remainingMinutes = Math.ceil((lockoutUntil - Date.now()) / 60000);
+      setError(`Too many failed attempts. Please try again in ${remainingMinutes} minute(s).`);
+      setLoading(false);
+      return;
+    }
+
     if (!auth) {
       setError('Firebase authentication is not configured');
       setLoading(false);
@@ -64,23 +74,36 @@ export default function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
     try {
       await signInWithEmailAndPassword(auth, loginEmail, loginPassword);
       toast.success('Welcome back!');
+      setLoginAttempts(0); // Reset attempts on successful login
+      setLockoutUntil(null);
       onOpenChange(false);
       // Reset form
       setLoginEmail('');
       setLoginPassword('');
     } catch (err: any) {
       console.error('Login error:', err);
-      // User-friendly error messages
-      if (err.code === 'auth/invalid-credential') {
-        setError('Invalid email or password. Please try again.');
-      } else if (err.code === 'auth/user-not-found') {
-        setError('No account found with this email.');
-      } else if (err.code === 'auth/wrong-password') {
-        setError('Incorrect password. Please try again.');
-      } else if (err.code === 'auth/too-many-requests') {
-        setError('Too many failed attempts. Please try again later.');
+      // Track failed attempts
+      const newAttempts = loginAttempts + 1;
+      setLoginAttempts(newAttempts);
+      
+      // Lock account after 5 failed attempts
+      if (newAttempts >= 5) {
+        const lockoutTime = Date.now() + (15 * 60 * 1000); // 15 minutes
+        setLockoutUntil(lockoutTime);
+        setError('Too many failed attempts. Account locked for 15 minutes.');
       } else {
-        setError('Failed to login. Please check your credentials.');
+        // User-friendly error messages
+        if (err.code === 'auth/invalid-credential') {
+          setError(`Invalid email or password. ${5 - newAttempts} attempts remaining.`);
+        } else if (err.code === 'auth/user-not-found') {
+          setError('No account found with this email.');
+        } else if (err.code === 'auth/wrong-password') {
+          setError(`Incorrect password. ${5 - newAttempts} attempts remaining.`);
+        } else if (err.code === 'auth/too-many-requests') {
+          setError('Too many failed attempts. Please try again later.');
+        } else {
+          setError('Failed to login. Please check your credentials.');
+        }
       }
     } finally {
       setLoading(false);
@@ -136,7 +159,9 @@ export default function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
 
         toast.success('Account created successfully! Logging you in...');
         
+        // Close dialog immediately
         onOpenChange(false);
+        
         // Reset form
         setRegisterEmail('');
         setRegisterPassword('');
@@ -144,13 +169,15 @@ export default function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
         setRegisterDisplayName('');
         setConfirmPassword('');
         setReferralCode(null);
+        setLoading(false); // Clear loading state
         
-        // Auto-login after short delay
+        // Auto-switch to login tab after short delay
         setTimeout(() => {
           setAuthTab('login');
         }, 1500);
       } else {
         setError(data.message || 'Failed to register');
+        setLoading(false);
       }
     } catch (err: any) {
       console.error('Register error:', err);
