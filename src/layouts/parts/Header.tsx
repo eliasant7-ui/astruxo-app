@@ -70,8 +70,10 @@ export default function Header() {
                 <Link
                   key={item.href}
                   to={item.href}
-                  className={`text-sm font-medium transition-colors hover:text-primary ${
-                    location.pathname === item.href ? 'text-foreground' : 'text-muted-foreground'
+                  className={`text-sm font-medium transition-colors hover:text-primary px-3 py-2 rounded-md ${
+                    location.pathname === item.href 
+                      ? 'text-foreground bg-primary/10 font-semibold' 
+                      : 'text-muted-foreground hover:bg-muted'
                   }`}
                 >
                   {item.label}
