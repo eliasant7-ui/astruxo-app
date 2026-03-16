@@ -134,9 +134,9 @@ export default function SyncUserPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="mb-4 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-            <p className="text-sm text-blue-800 dark:text-blue-200">
-              <strong>One-time setup:</strong> This creates your profile in the database. 
+          <div className="mb-4 p-4 bg-blue-100 dark:bg-blue-900/40 border-2 border-blue-300 dark:border-blue-700 rounded-lg">
+            <p className="text-sm text-blue-900 dark:text-blue-100 font-medium leading-relaxed">
+              <strong className="text-blue-950 dark:text-blue-50">One-time setup:</strong> This creates your profile in the database.
               After this, you'll be able to edit your profile, manage earnings, and delete your account.
             </p>
           </div>
