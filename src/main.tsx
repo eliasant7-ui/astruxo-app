@@ -4,6 +4,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import App from './App';
 import './styles/globals.css';
 
+console.log('[DEPLOY_TEST] marker=astruxo-main-tsx-2026-03-16-21-48-pkt');
+
 // Add robots meta tag only in development mode
 if (import.meta.env.MODE === 'development') {
   const meta = document.createElement('meta');
