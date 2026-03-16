@@ -29,7 +29,7 @@ export const users = pgTable('users', {
   liveConfirmedAt: timestamp('live_confirmed_at'), // When user confirmed pre-live guidelines
   referredBy: varchar('referred_by', { length: 50 }), // Username of referrer
   createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().onUpdateNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
 }, (table) => ({
   firebaseUidIdx: index('firebase_uid_idx').on(table.firebaseUid),
   usernameIdx: index('username_idx').on(table.username),
@@ -185,7 +185,7 @@ export const posts = pgTable('posts', {
   commentCount: integer('comment_count').default(0).notNull(),
   viewCount: integer('view_count').default(0).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().onUpdateNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
 }, (table) => ({
   userIdIdx: index('user_id_idx').on(table.userId),
   streamIdIdx: index('stream_id_idx').on(table.streamId),
@@ -205,7 +205,7 @@ export const comments = pgTable('comments', {
   likeCount: integer('like_count').default(0).notNull(),
   replyCount: integer('reply_count').default(0).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().onUpdateNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
 }, (table) => ({
   postIdIdx: index('post_id_idx').on(table.postId),
   userIdIdx: index('user_id_idx').on(table.userId),
@@ -445,7 +445,7 @@ export const activeConnections = pgTable('active_connections', {
   longitude: decimal('longitude', { precision: 10, scale: 7 }),
   userAgent: text('user_agent'),
   connectedAt: timestamp('connected_at').defaultNow().notNull(),
-  lastSeenAt: timestamp('last_seen_at').defaultNow().onUpdateNow().notNull(),
+  lastSeenAt: timestamp('last_seen_at').defaultNow().notNull(),
 }, (table) => ({
   socketIdIdx: index('socket_id_idx').on(table.socketId),
   userIdIdx: index('user_id_idx').on(table.userId),
@@ -657,7 +657,7 @@ export const botAccounts = pgTable('bot_accounts', {
   postFrequencyMinutes: integer('post_frequency_minutes').default(120).notNull(), // How often to post
   lastPostedAt: timestamp('last_posted_at'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().onUpdateNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
 }, (table) => ({
   userIdIdx: index('user_id_idx').on(table.userId),
   botTypeIdx: index('bot_type_idx').on(table.botType),
@@ -704,7 +704,7 @@ export const bootstrapConfig = pgTable('bootstrap_config', {
   maxPostIntervalMinutes: integer('max_post_interval_minutes').default(180).notNull(),
   commentProbability: decimal('comment_probability', { precision: 3, scale: 2 }).default('0.15').notNull(), // 15% chance
   maxCommentsPerPost: integer('max_comments_per_post').default(2).notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().onUpdateNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
 // Automated Activity Log - Track all automated actions
@@ -730,4 +730,5 @@ export const botAccountsRelations = relations(botAccounts, ({ one }) => ({
     references: [users.id],
   }),
 }));
+
 
