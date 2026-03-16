@@ -1,5 +1,6 @@
 // Vercel Serverless Function - Create Post
 import { db } from '../db/client.js';
+import { ensureCoreTables } from '../db/bootstrap.js';
 import { posts, users } from '../db/schema.js';
 import { verifyIdToken } from '../services/firebase.js';
 import { eq } from 'drizzle-orm';
@@ -18,6 +19,8 @@ export default async function handler(req, res) {
     if (!db) {
       return res.status(500).json({ error: 'Database not configured' });
     }
+
+    await ensureCoreTables();
 
     // Verify authentication
     const authHeader = req.headers.authorization;

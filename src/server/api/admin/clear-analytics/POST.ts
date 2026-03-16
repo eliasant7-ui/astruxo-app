@@ -6,31 +6,24 @@
 
 import type { Request, Response } from 'express';
 import { db } from '../../../db/client.js';
-import { userSessions, activeConnections } from '../../../db/schema.js';
-import { sql } from 'drizzle-orm';
+import { sql, eq } from 'drizzle-orm';
+import { users } from '../../../db/schema.js';
+import { verifyIdToken } from '../../../services/firebase.js';
 
 export default async function handler(req: Request, res: Response) {
   try {
-    // Inline authentication check
     const authHeader = req.headers.authorization;
     if (!authHeader?.startsWith('Bearer ')) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    const idToken = authHeader.split('Bearer ')[1];
-    
-    // Import Firebase Admin for token verification
-    const { verifyIdToken } = await import('../../../services/firebase.js');
+    const idToken = authHeader.slice(7);
     const decodedToken = await verifyIdToken(idToken);
-    
+
     if (!decodedToken) {
       return res.status(401).json({ error: 'Invalid token' });
     }
 
-    // Get user from database to check admin status
-    const { users } = await import('../../../db/schema.js');
-    const { eq } = await import('drizzle-orm');
-    
     const [user] = await db
       .select()
       .from(users)
@@ -41,22 +34,10 @@ export default async function handler(req: Request, res: Response) {
       return res.status(403).json({ error: 'Admin access required' });
     }
 
-    console.log('🧹 Clearing all analytics data...');
+    console.log('[ADMIN_CLEAR_ANALYTICS] Truncating analytics tables');
+    await db.execute(sql`TRUNCATE TABLE user_sessions, active_connections RESTART IDENTITY`);
 
-    // Delete all user sessions
-    const sessionsDeleted = await db.delete(userSessions);
-    console.log('✅ Deleted user sessions');
-
-    // Delete all active connections
-    const connectionsDeleted = await db.delete(activeConnections);
-    console.log('✅ Deleted active connections');
-
-    // Reset auto-increment counters (optional)
-    await db.execute(sql`ALTER TABLE user_sessions AUTO_INCREMENT = 1`);
-    await db.execute(sql`ALTER TABLE active_connections AUTO_INCREMENT = 1`);
-    console.log('✅ Reset auto-increment counters');
-
-    res.json({
+    return res.json({
       success: true,
       message: 'All analytics data cleared successfully',
       deleted: {
@@ -65,8 +46,8 @@ export default async function handler(req: Request, res: Response) {
       },
     });
   } catch (error) {
-    console.error('❌ Error clearing analytics:', error);
-    res.status(500).json({
+    console.error('[ADMIN_CLEAR_ANALYTICS] Error:', error);
+    return res.status(500).json({
       error: 'Failed to clear analytics',
       message: error instanceof Error ? error.message : 'Unknown error',
     });

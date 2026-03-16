@@ -22,7 +22,7 @@
     "clean": "rm -rf dist node_modules/.vite",
     "reset": "npm run clean && npm install",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
+    "db:migrate": "node run-migrations.js",
     "migrate:avatars": "npx tsx src/server/db/migrate-avatars.ts"
   },
   "dependencies": {

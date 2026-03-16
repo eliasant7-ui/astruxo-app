@@ -1,5 +1,6 @@
 import { eq } from 'drizzle-orm';
 import { db } from '../db/client.js';
+import { ensureCoreTables } from '../db/bootstrap.js';
 import { users } from '../db/schema.js';
 import { verifyIdToken } from '../services/firebase.js';
 
@@ -35,6 +36,8 @@ export default async function handler(req, res) {
       console.error('[AUTH_ME] Database not configured', meta);
       return res.status(500).json({ error: 'Internal Server Error', message: 'Database not configured' });
     }
+
+    await ensureCoreTables();
 
     const idToken = getBearerToken(req);
     if (!idToken) {

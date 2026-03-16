@@ -1,38 +1,24 @@
-import { drizzle } from 'drizzle-orm/mysql2';
-import mysql from 'mysql2/promise';
-import { migrate } from 'drizzle-orm/mysql2/migrator';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+import 'dotenv/config';
+import { ensureCoreTables } from './api/db/bootstrap.js';
 
 async function main() {
-  console.log('🔄 Conectando a MySQL...');
-  
-  const connection = await mysql.createConnection({
-    host: 'localhost',
-    port: 3306,
-    user: 'root',
-    password: '',
-    database: 'astruxo_dev',
-    multipleStatements: true,
-  });
+  const hasDbUrl = Boolean(
+    process.env.DATABASE_URL ||
+    process.env.POSTGRES_URL ||
+    process.env.POSTGRES_PRISMA_URL ||
+    process.env.POSTGRES_URL_NON_POOLING
+  );
 
-  const db = drizzle(connection);
+  if (!hasDbUrl) {
+    throw new Error('Missing DATABASE_URL/POSTGRES_URL for migration');
+  }
 
-  console.log('🔄 Ejecutando migraciones...');
-  
-  await migrate(db, {
-    migrationsFolder: path.join(__dirname, 'drizzle'),
-  });
-
-  console.log('✅ Migraciones completadas!');
-  
-  await connection.end();
-  process.exit(0);
+  console.log('[DB_MIGRATE] Ensuring core Postgres schema');
+  await ensureCoreTables();
+  console.log('[DB_MIGRATE] Core schema ready');
 }
 
-main().catch((err) => {
-  console.error('❌ Error:', err);
+main().catch((error) => {
+  console.error('[DB_MIGRATE] Failed:', error instanceof Error ? error.message : String(error));
   process.exit(1);
 });
