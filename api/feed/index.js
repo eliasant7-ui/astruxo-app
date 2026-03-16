@@ -1,7 +1,5 @@
 // Vercel Serverless Function - Get Feed
-import { db } from '../../src/server/db/client.js';
-import { posts, users, streams } from '../../src/server/db/schema.js';
-import { desc, sql } from 'drizzle-orm';
+import { neon } from '@neondatabase/serverless';
 
 export const config = {
   runtime: 'nodejs',
@@ -14,61 +12,61 @@ export default async function handler(req, res) {
   }
 
   try {
-    if (!db) {
-      return res.status(500).json({ error: 'Database not configured' });
+    const databaseUrl = process.env.DATABASE_URL;
+    if (!databaseUrl) {
+      return res.status(500).json({ error: 'Database URL not configured' });
     }
 
+    const sql = neon(databaseUrl);
+
     // Parse query parameters
-    const limit = Math.min(parseInt(req.query.limit as string) || 20, 50);
-    const offset = parseInt(req.query.offset as string) || 0;
+    const limit = Math.min(parseInt(req.query.limit) || 20, 50);
+    const offset = parseInt(req.query.offset) || 0;
 
     // Fetch posts with user info
-    const feedPosts = await db
-      .select({
-        id: posts.id,
-        userId: posts.userId,
-        streamId: posts.streamId,
-        content: posts.content,
-        mediaType: posts.mediaType,
-        mediaUrl: posts.mediaUrl,
-        thumbnailUrl: posts.thumbnailUrl,
-        linkPreview: posts.linkPreview,
-        likeCount: posts.likeCount,
-        commentCount: posts.commentCount,
-        viewCount: posts.viewCount,
-        createdAt: posts.createdAt,
-        updatedAt: posts.updatedAt,
-        user: {
-          id: users.id,
-          username: users.username,
-          displayName: users.displayName,
-          avatarUrl: users.avatarUrl,
-          followerCount: users.followerCount,
-          firebaseUid: users.firebaseUid,
-          isLive: users.isLive,
-        },
-        currentStreamId: streams.id,
-      })
-      .from(posts)
-      .leftJoin(users, sql`${posts.userId} = ${users.id}`)
-      .leftJoin(streams, sql`${posts.streamId} = ${streams.id} AND ${streams.status} = 'live'`)
-      .orderBy(desc(posts.createdAt))
-      .limit(limit)
-      .offset(offset);
+    const feedPosts = await sql`
+      SELECT 
+        p.id,
+        p."userId",
+        p."streamId",
+        p.content,
+        p."mediaType",
+        p."mediaUrl",
+        p."thumbnailUrl",
+        p."linkPreview",
+        p."likeCount",
+        p."commentCount",
+        p."viewCount",
+        p."createdAt",
+        p."updatedAt",
+        json_build_object(
+          'id', u.id,
+          'username', u.username,
+          'displayName', u."displayName",
+          'avatarUrl', u."avatarUrl",
+          'followerCount', u."followerCount",
+          'firebaseUid', u."firebaseUid",
+          'isLive', u."isLive"
+        ) as user,
+        s.id as "currentStreamId"
+      FROM posts p
+      LEFT JOIN users u ON p."userId" = u.id
+      LEFT JOIN streams s ON p."streamId" = s.id AND s.status = 'live'
+      ORDER BY p."createdAt" DESC
+      LIMIT ${limit} OFFSET ${offset}
+    `;
 
     // Get total count
-    const totalCount = await db
-      .select({ count: sql<number>`count(*)` })
-      .from(posts);
+    const totalCount = await sql`SELECT COUNT(*) FROM posts`;
 
     res.status(200).json({
       success: true,
       posts: feedPosts,
       pagination: {
-        total: totalCount[0]?.count || 0,
+        total: parseInt(totalCount[0]?.count) || 0,
         limit,
         offset,
-        hasMore: (totalCount[0]?.count || 0) > offset + limit,
+        hasMore: (parseInt(totalCount[0]?.count) || 0) > offset + limit,
       },
     });
   } catch (error) {
