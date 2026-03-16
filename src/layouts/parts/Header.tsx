@@ -118,7 +118,7 @@ export default function Header() {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="rounded-md h-9 w-9"
+                    className="rounded-md h-10 w-10 border border-border/50"
                     onClick={() => setSearchDialogOpen(true)}
                     title="Buscar usuarios"
                   >
@@ -133,7 +133,7 @@ export default function Header() {
 
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon" className="h-9 w-9"><MoreVertical className="h-5 w-5" /></Button>
+                      <Button variant="ghost" size="icon" className="h-10 w-10 border border-border/50"><MoreVertical className="h-5 w-5" /></Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>Info</DropdownMenuLabel>
