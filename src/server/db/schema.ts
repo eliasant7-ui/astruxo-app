@@ -4,14 +4,14 @@
  * Phase 2: Social Features (Posts, Comments, Likes, Media)
  */
 
-import { mysqlTable, int, varchar, text, decimal, timestamp, boolean, index, json } from 'drizzle-orm/mysql-core';
+import { pgTable, int, varchar, text, decimal, timestamp, boolean, index, json } from .drizzle-orm/pg-core.;
 import { relations } from 'drizzle-orm';
 
 // ============================================
 // USERS TABLE
 // ============================================
-export const users = mysqlTable('users', {
-  id: int('id').primaryKey().autoincrement(),
+export const users = pgTable('users', {
+  id: integer('id').primaryKey().serial(),
   firebaseUid: varchar('firebase_uid', { length: 128 }).notNull().unique(),
   username: varchar('username', { length: 50 }).notNull().unique(),
   email: varchar('email', { length: 255 }).notNull().unique(),
@@ -21,9 +21,9 @@ export const users = mysqlTable('users', {
   role: varchar('role', { length: 20 }).default('user').notNull(), // 'user', 'moderator', 'admin'
   isSuspended: boolean('is_suspended').default(false).notNull(),
   isBanned: boolean('is_banned').default(false).notNull(),
-  followerCount: int('follower_count').default(0).notNull(),
-  followingCount: int('following_count').default(0).notNull(),
-  coinBalance: int('coin_balance').default(0).notNull(), // Virtual coins for gifts
+  followerCount: integer('follower_count').default(0).notNull(),
+  followingCount: integer('following_count').default(0).notNull(),
+  coinBalance: integer('coin_balance').default(0).notNull(), // Virtual coins for gifts
   walletBalance: decimal('wallet_balance', { precision: 10, scale: 2 }).default('0.00').notNull(), // Real money earnings
   isLive: boolean('is_live').default(false).notNull(),
   liveConfirmedAt: timestamp('live_confirmed_at'), // When user confirmed pre-live guidelines
@@ -31,214 +31,214 @@ export const users = mysqlTable('users', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().onUpdateNow().notNull(),
 }, (table) => ({
-  firebaseUidIdx: index('firebase_uid_idx').on(table.firebaseUid),
-  usernameIdx: index('username_idx').on(table.username),
-  isLiveIdx: index('is_live_idx').on(table.isLive),
-  roleIdx: index('role_idx').on(table.role),
+  firebaseUidIdx: pgIndex('firebase_uid_idx').on(table.firebaseUid),
+  usernameIdx: pgIndex('username_idx').on(table.username),
+  isLiveIdx: pgIndex('is_live_idx').on(table.isLive),
+  roleIdx: pgIndex('role_idx').on(table.role),
 }));
 
 // ============================================
 // FOLLOWS TABLE
 // ============================================
-export const follows = mysqlTable('follows', {
-  id: int('id').primaryKey().autoincrement(),
-  followerId: int('follower_id').notNull(),
-  followingId: int('following_id').notNull(),
+export const follows = pgTable('follows', {
+  id: integer('id').primaryKey().serial(),
+  followerId: integer('follower_id').notNull(),
+  followingId: integer('following_id').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 }, (table) => ({
-  followerIdx: index('follower_idx').on(table.followerId),
-  followingIdx: index('following_idx').on(table.followingId),
-  uniqueFollow: index('unique_follow').on(table.followerId, table.followingId),
+  followerIdx: pgIndex('follower_idx').on(table.followerId),
+  followingIdx: pgIndex('following_idx').on(table.followingId),
+  uniqueFollow: pgIndex('unique_follow').on(table.followerId, table.followingId),
 }));
 
 // ============================================
 // STREAMS TABLE
 // ============================================
-export const streams = mysqlTable('streams', {
-  id: int('id').primaryKey().autoincrement(),
-  userId: int('user_id').notNull(),
+export const streams = pgTable('streams', {
+  id: integer('id').primaryKey().serial(),
+  userId: integer('user_id').notNull(),
   slug: varchar('slug', { length: 100 }), // Human-readable URL slug (username or custom)
   title: varchar('title', { length: 255 }).notNull(),
   description: text('description'),
   thumbnailUrl: text('thumbnail_url'),
   status: varchar('status', { length: 20 }).default('live').notNull(), // 'live', 'ended'
   agoraChannelId: varchar('agora_channel_id', { length: 255 }),
-  viewerCount: int('viewer_count').default(0).notNull(),
-  peakViewerCount: int('peak_viewer_count').default(0).notNull(),
+  viewerCount: integer('viewer_count').default(0).notNull(),
+  peakViewerCount: integer('peak_viewer_count').default(0).notNull(),
   totalGiftsReceived: decimal('total_gifts_received', { precision: 10, scale: 2 }).default('0.00').notNull(),
-  duration: int('duration'), // Duration in seconds
+  duration: integer('duration'), // Duration in seconds
   isPrivate: boolean('is_private').default(false).notNull(), // Private stream
-  requiredGiftId: int('required_gift_id'), // Gift required to enter private stream
-  goalAmount: int('goal_amount'), // Coin goal for the stream
-  currentGoalProgress: int('current_goal_progress').default(0), // Current progress towards goal
-  entryPrice: int('entry_price'), // Coins required to enter the stream
+  requiredGiftId: integer('required_gift_id'), // Gift required to enter private stream
+  goalAmount: integer('goal_amount'), // Coin goal for the stream
+  currentGoalProgress: integer('current_goal_progress').default(0), // Current progress towards goal
+  entryPrice: integer('entry_price'), // Coins required to enter the stream
   isSystemStream: boolean('is_system_stream').default(false).notNull(), // System-managed 24/7 stream
   youtubePlaylistId: varchar('youtube_playlist_id', { length: 255 }), // YouTube playlist for system streams
-  currentPlaylistIndex: int('current_playlist_index').default(0), // Current video index in playlist (for 24/7 channels)
+  currentPlaylistIndex: integer('current_playlist_index').default(0), // Current video index in playlist (for 24/7 channels)
   startedAt: timestamp('started_at').defaultNow().notNull(),
   endedAt: timestamp('ended_at'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 }, (table) => ({
-  userIdIdx: index('user_id_idx').on(table.userId),
-  slugIdx: index('slug_idx').on(table.slug),
-  statusIdx: index('status_idx').on(table.status),
-  startedAtIdx: index('started_at_idx').on(table.startedAt),
-  isPrivateIdx: index('is_private_idx').on(table.isPrivate),
-  isSystemStreamIdx: index('is_system_stream_idx').on(table.isSystemStream),
+  userIdIdx: pgIndex('user_id_idx').on(table.userId),
+  slugIdx: pgIndex('slug_idx').on(table.slug),
+  statusIdx: pgIndex('status_idx').on(table.status),
+  startedAtIdx: pgIndex('started_at_idx').on(table.startedAt),
+  isPrivateIdx: pgIndex('is_private_idx').on(table.isPrivate),
+  isSystemStreamIdx: pgIndex('is_system_stream_idx').on(table.isSystemStream),
 }));
 
 // ============================================
 // CHAT MESSAGES TABLE
 // ============================================
-export const chatMessages = mysqlTable('chat_messages', {
-  id: int('id').primaryKey().autoincrement(),
-  streamId: int('stream_id').notNull(),
-  userId: int('user_id').notNull(),
+export const chatMessages = pgTable('chat_messages', {
+  id: integer('id').primaryKey().serial(),
+  streamId: integer('stream_id').notNull(),
+  userId: integer('user_id').notNull(),
   message: text('message').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 }, (table) => ({
-  streamIdIdx: index('stream_id_idx').on(table.streamId),
-  createdAtIdx: index('created_at_idx').on(table.createdAt),
+  streamIdIdx: pgIndex('stream_id_idx').on(table.streamId),
+  createdAtIdx: pgIndex('created_at_idx').on(table.createdAt),
 }));
 
 // ============================================
 // STREAM ENTRY PAYMENTS TABLE
 // ============================================
-export const streamEntryPayments = mysqlTable('stream_entry_payments', {
-  id: int('id').primaryKey().autoincrement(),
-  streamId: int('stream_id').notNull(),
-  userId: int('user_id').notNull(),
-  amountPaid: int('amount_paid').notNull(), // Coins paid for entry
+export const streamEntryPayments = pgTable('stream_entry_payments', {
+  id: integer('id').primaryKey().serial(),
+  streamId: integer('stream_id').notNull(),
+  userId: integer('user_id').notNull(),
+  amountPaid: integer('amount_paid').notNull(), // Coins paid for entry
   paidAt: timestamp('paid_at').defaultNow().notNull(),
 }, (table) => ({
-  streamUserIdx: index('stream_user_idx').on(table.streamId, table.userId),
-  streamIdIdx: index('stream_id_idx').on(table.streamId),
+  streamUserIdx: pgIndex('stream_user_idx').on(table.streamId, table.userId),
+  streamIdIdx: pgIndex('stream_id_idx').on(table.streamId),
 }));
 
 // ============================================
 // GIFTS CATALOG TABLE
 // ============================================
-export const gifts = mysqlTable('gifts', {
-  id: int('id').primaryKey().autoincrement(),
+export const gifts = pgTable('gifts', {
+  id: integer('id').primaryKey().serial(),
   name: varchar('name', { length: 50 }).notNull(),
   icon: varchar('icon', { length: 50 }).notNull(), // Lucide icon name
-  coinPrice: int('coin_price').notNull(), // Price in coins
+  coinPrice: integer('coin_price').notNull(), // Price in coins
   animationType: varchar('animation_type', { length: 50 }).default('bounce').notNull(),
   isActive: boolean('is_active').default(true).notNull(),
-  sortOrder: int('sort_order').default(0).notNull(),
+  sortOrder: integer('sort_order').default(0).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 }, (table) => ({
-  isActiveIdx: index('is_active_idx').on(table.isActive),
-  sortOrderIdx: index('sort_order_idx').on(table.sortOrder),
+  isActiveIdx: pgIndex('is_active_idx').on(table.isActive),
+  sortOrderIdx: pgIndex('sort_order_idx').on(table.sortOrder),
 }));
 
 // ============================================
 // GIFT TRANSACTIONS TABLE
 // ============================================
-export const giftTransactions = mysqlTable('gift_transactions', {
-  id: int('id').primaryKey().autoincrement(),
-  giftId: int('gift_id').notNull(),
-  senderId: int('sender_id').notNull(), // User who sent the gift
-  receiverId: int('receiver_id').notNull(), // Streamer who received
-  streamId: int('stream_id').notNull(),
-  coinAmount: int('coin_amount').notNull(),
+export const giftTransactions = pgTable('gift_transactions', {
+  id: integer('id').primaryKey().serial(),
+  giftId: integer('gift_id').notNull(),
+  senderId: integer('sender_id').notNull(), // User who sent the gift
+  receiverId: integer('receiver_id').notNull(), // Streamer who received
+  streamId: integer('stream_id').notNull(),
+  coinAmount: integer('coin_amount').notNull(),
   message: text('message'), // Optional message with gift
   createdAt: timestamp('created_at').defaultNow().notNull(),
 }, (table) => ({
-  senderIdx: index('sender_idx').on(table.senderId),
-  receiverIdx: index('receiver_idx').on(table.receiverId),
-  streamIdx: index('stream_idx').on(table.streamId),
-  createdAtIdx: index('created_at_idx').on(table.createdAt),
+  senderIdx: pgIndex('sender_idx').on(table.senderId),
+  receiverIdx: pgIndex('receiver_idx').on(table.receiverId),
+  streamIdx: pgIndex('stream_idx').on(table.streamId),
+  createdAtIdx: pgIndex('created_at_idx').on(table.createdAt),
 }));
 
 // ============================================
 // COIN TRANSACTIONS TABLE
 // ============================================
-export const coinTransactions = mysqlTable('coin_transactions', {
-  id: int('id').primaryKey().autoincrement(),
-  userId: int('user_id').notNull(),
-  amount: int('amount').notNull(), // Positive for purchase, negative for spending
+export const coinTransactions = pgTable('coin_transactions', {
+  id: integer('id').primaryKey().serial(),
+  userId: integer('user_id').notNull(),
+  amount: integer('amount').notNull(), // Positive for purchase, negative for spending
   type: varchar('type', { length: 20 }).notNull(), // 'purchase', 'gift_sent', 'gift_received', 'withdrawal'
   description: text('description'),
-  referenceId: int('reference_id'), // ID of related transaction (gift, purchase, etc)
+  referenceId: integer('reference_id'), // ID of related transaction (gift, purchase, etc)
   stripeSessionId: varchar('stripe_session_id', { length: 255 }), // Stripe checkout session ID
   createdAt: timestamp('created_at').defaultNow().notNull(),
 }, (table) => ({
-  userIdIdx: index('user_id_idx').on(table.userId),
-  typeIdx: index('type_idx').on(table.type),
-  createdAtIdx: index('created_at_idx').on(table.createdAt),
+  userIdIdx: pgIndex('user_id_idx').on(table.userId),
+  typeIdx: pgIndex('type_idx').on(table.type),
+  createdAtIdx: pgIndex('created_at_idx').on(table.createdAt),
 }));
 
 // ============================================
 // POSTS TABLE (Social Feed)
 // ============================================
-export const posts = mysqlTable('posts', {
-  id: int('id').primaryKey().autoincrement(),
-  userId: int('user_id').notNull(),
-  streamId: int('stream_id'), // Reference to livestream if this post is sharing a stream
+export const posts = pgTable('posts', {
+  id: integer('id').primaryKey().serial(),
+  userId: integer('user_id').notNull(),
+  streamId: integer('stream_id'), // Reference to livestream if this post is sharing a stream
   content: text('content'), // Text content of the post
   mediaType: varchar('media_type', { length: 20 }), // 'image', 'video', 'livestream', null
   mediaUrl: text('media_url'), // URL to image or video
   thumbnailUrl: text('thumbnail_url'), // Thumbnail for videos
   linkPreview: json('link_preview'), // Cached OG metadata: { url, title, description, image, siteName }
-  likeCount: int('like_count').default(0).notNull(),
-  commentCount: int('comment_count').default(0).notNull(),
-  viewCount: int('view_count').default(0).notNull(),
+  likeCount: integer('like_count').default(0).notNull(),
+  commentCount: integer('comment_count').default(0).notNull(),
+  viewCount: integer('view_count').default(0).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().onUpdateNow().notNull(),
 }, (table) => ({
-  userIdIdx: index('user_id_idx').on(table.userId),
-  streamIdIdx: index('stream_id_idx').on(table.streamId),
-  createdAtIdx: index('created_at_idx').on(table.createdAt),
-  mediaTypeIdx: index('media_type_idx').on(table.mediaType),
+  userIdIdx: pgIndex('user_id_idx').on(table.userId),
+  streamIdIdx: pgIndex('stream_id_idx').on(table.streamId),
+  createdAtIdx: pgIndex('created_at_idx').on(table.createdAt),
+  mediaTypeIdx: pgIndex('media_type_idx').on(table.mediaType),
 }));
 
 // ============================================
 // COMMENTS TABLE
 // ============================================
-export const comments = mysqlTable('comments', {
-  id: int('id').primaryKey().autoincrement(),
-  postId: int('post_id').notNull(),
-  userId: int('user_id').notNull(),
+export const comments = pgTable('comments', {
+  id: integer('id').primaryKey().serial(),
+  postId: integer('post_id').notNull(),
+  userId: integer('user_id').notNull(),
   content: text('content').notNull(),
-  parentId: int('parent_id'), // For nested replies
-  likeCount: int('like_count').default(0).notNull(),
-  replyCount: int('reply_count').default(0).notNull(),
+  parentId: integer('parent_id'), // For nested replies
+  likeCount: integer('like_count').default(0).notNull(),
+  replyCount: integer('reply_count').default(0).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().onUpdateNow().notNull(),
 }, (table) => ({
-  postIdIdx: index('post_id_idx').on(table.postId),
-  userIdIdx: index('user_id_idx').on(table.userId),
-  parentIdIdx: index('parent_id_idx').on(table.parentId),
-  createdAtIdx: index('created_at_idx').on(table.createdAt),
+  postIdIdx: pgIndex('post_id_idx').on(table.postId),
+  userIdIdx: pgIndex('user_id_idx').on(table.userId),
+  parentIdIdx: pgIndex('parent_id_idx').on(table.parentId),
+  createdAtIdx: pgIndex('created_at_idx').on(table.createdAt),
 }));
 
 // ============================================
 // LIKES TABLE
 // ============================================
-export const likes = mysqlTable('likes', {
-  id: int('id').primaryKey().autoincrement(),
-  postId: int('post_id').notNull(),
-  userId: int('user_id').notNull(),
+export const likes = pgTable('likes', {
+  id: integer('id').primaryKey().serial(),
+  postId: integer('post_id').notNull(),
+  userId: integer('user_id').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 }, (table) => ({
-  postIdIdx: index('post_id_idx').on(table.postId),
-  userIdIdx: index('user_id_idx').on(table.userId),
-  uniqueLike: index('unique_like').on(table.postId, table.userId),
+  postIdIdx: pgIndex('post_id_idx').on(table.postId),
+  userIdIdx: pgIndex('user_id_idx').on(table.userId),
+  uniqueLike: pgIndex('unique_like').on(table.postId, table.userId),
 }));
 
 // ============================================
 // COMMENT LIKES TABLE
 // ============================================
-export const commentLikes = mysqlTable('comment_likes', {
-  id: int('id').primaryKey().autoincrement(),
-  commentId: int('comment_id').notNull(),
-  userId: int('user_id').notNull(),
+export const commentLikes = pgTable('comment_likes', {
+  id: integer('id').primaryKey().serial(),
+  commentId: integer('comment_id').notNull(),
+  userId: integer('user_id').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 }, (table) => ({
-  commentIdIdx: index('comment_id_idx').on(table.commentId),
-  userIdIdx: index('user_id_idx').on(table.userId),
-  uniqueLike: index('unique_comment_like').on(table.commentId, table.userId),
+  commentIdIdx: pgIndex('comment_id_idx').on(table.commentId),
+  userIdIdx: pgIndex('user_id_idx').on(table.userId),
+  uniqueLike: pgIndex('unique_comment_like').on(table.commentId, table.userId),
 }));
 
 // ============================================
@@ -356,42 +356,42 @@ export const likesRelations = relations(likes, ({ one }) => ({
 // ============================================
 // REPORTS TABLE (RBAC System)
 // ============================================
-export const reports = mysqlTable('reports', {
-  id: int('id').primaryKey().autoincrement(),
-  reporterUserId: int('reporter_user_id').notNull(),
-  reportedUserId: int('reported_user_id'),
-  reportedPostId: int('reported_post_id'),
-  reportedStreamId: int('reported_stream_id'),
+export const reports = pgTable('reports', {
+  id: integer('id').primaryKey().serial(),
+  reporterUserId: integer('reporter_user_id').notNull(),
+  reportedUserId: integer('reported_user_id'),
+  reportedPostId: integer('reported_post_id'),
+  reportedStreamId: integer('reported_stream_id'),
   reason: varchar('reason', { length: 100 }).notNull(), // 'spam', 'harassment', 'inappropriate', 'other'
   description: text('description'),
   status: varchar('status', { length: 20 }).default('pending').notNull(), // 'pending', 'reviewed', 'dismissed', 'action_taken'
-  reviewedBy: int('reviewed_by'), // Admin/Moderator ID
+  reviewedBy: integer('reviewed_by'), // Admin/Moderator ID
   reviewedAt: timestamp('reviewed_at'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 }, (table) => ({
-  reporterIdx: index('reporter_idx').on(table.reporterUserId),
-  reportedUserIdx: index('reported_user_idx').on(table.reportedUserId),
-  reportedPostIdx: index('reported_post_idx').on(table.reportedPostId),
-  statusIdx: index('status_idx').on(table.status),
+  reporterIdx: pgIndex('reporter_idx').on(table.reporterUserId),
+  reportedUserIdx: pgIndex('reported_user_idx').on(table.reportedUserId),
+  reportedPostIdx: pgIndex('reported_post_idx').on(table.reportedPostId),
+  statusIdx: pgIndex('status_idx').on(table.status),
 }));
 
 // ============================================
 // MODERATION LOGS TABLE (RBAC System)
 // ============================================
-export const moderationLogs = mysqlTable('moderation_logs', {
-  id: int('id').primaryKey().autoincrement(),
-  adminId: int('admin_id').notNull(),
+export const moderationLogs = pgTable('moderation_logs', {
+  id: integer('id').primaryKey().serial(),
+  adminId: integer('admin_id').notNull(),
   actionType: varchar('action_type', { length: 50 }).notNull(), // 'ban_user', 'suspend_user', 'delete_post', 'restore_post', 'delete_stream'
-  targetUserId: int('target_user_id'),
-  targetPostId: int('target_post_id'),
-  targetStreamId: int('target_stream_id'),
+  targetUserId: integer('target_user_id'),
+  targetPostId: integer('target_post_id'),
+  targetStreamId: integer('target_stream_id'),
   reason: text('reason'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 }, (table) => ({
-  adminIdx: index('admin_idx').on(table.adminId),
-  actionTypeIdx: index('action_type_idx').on(table.actionType),
-  targetUserIdx: index('target_user_idx').on(table.targetUserId),
-  createdAtIdx: index('created_at_idx').on(table.createdAt),
+  adminIdx: pgIndex('admin_idx').on(table.adminId),
+  actionTypeIdx: pgIndex('action_type_idx').on(table.actionType),
+  targetUserIdx: pgIndex('target_user_idx').on(table.targetUserId),
+  createdAtIdx: pgIndex('created_at_idx').on(table.createdAt),
 }));
 
 // Relations for reports
@@ -433,10 +433,10 @@ export const moderationLogsRelations = relations(moderationLogs, ({ one }) => ({
 // ============================================
 // ACTIVE CONNECTIONS TABLE (Tracking)
 // ============================================
-export const activeConnections = mysqlTable('active_connections', {
-  id: int('id').primaryKey().autoincrement(),
+export const activeConnections = pgTable('active_connections', {
+  id: integer('id').primaryKey().serial(),
   socketId: varchar('socket_id', { length: 255 }).notNull().unique(),
-  userId: int('user_id'), // Nullable for anonymous users
+  userId: integer('user_id'), // Nullable for anonymous users
   ipAddress: varchar('ip_address', { length: 45 }), // IPv4 or IPv6
   country: varchar('country', { length: 100 }),
   city: varchar('city', { length: 100 }),
@@ -447,9 +447,9 @@ export const activeConnections = mysqlTable('active_connections', {
   connectedAt: timestamp('connected_at').defaultNow().notNull(),
   lastSeenAt: timestamp('last_seen_at').defaultNow().onUpdateNow().notNull(),
 }, (table) => ({
-  socketIdIdx: index('socket_id_idx').on(table.socketId),
-  userIdIdx: index('user_id_idx').on(table.userId),
-  connectedAtIdx: index('connected_at_idx').on(table.connectedAt),
+  socketIdIdx: pgIndex('socket_id_idx').on(table.socketId),
+  userIdIdx: pgIndex('user_id_idx').on(table.userId),
+  connectedAtIdx: pgIndex('connected_at_idx').on(table.connectedAt),
 }));
 
 export const activeConnectionsRelations = relations(activeConnections, ({ one }) => ({
@@ -462,9 +462,9 @@ export const activeConnectionsRelations = relations(activeConnections, ({ one })
 // ============================================
 // USER SESSIONS TABLE (for analytics)
 // ============================================
-export const userSessions = mysqlTable('user_sessions', {
-  id: int('id').primaryKey().autoincrement(),
-  userId: int('user_id'), // Nullable for anonymous sessions
+export const userSessions = pgTable('user_sessions', {
+  id: integer('id').primaryKey().serial(),
+  userId: integer('user_id'), // Nullable for anonymous sessions
   sessionId: varchar('session_id', { length: 255 }).notNull().unique(),
   ipAddress: varchar('ip_address', { length: 45 }),
   country: varchar('country', { length: 100 }),
@@ -473,12 +473,12 @@ export const userSessions = mysqlTable('user_sessions', {
   userAgent: text('user_agent'),
   startedAt: timestamp('started_at').defaultNow().notNull(),
   endedAt: timestamp('ended_at'),
-  durationSeconds: int('duration_seconds').default(0),
+  durationSeconds: integer('duration_seconds').default(0),
 }, (table) => ({
-  userIdIdx: index('user_id_idx').on(table.userId),
-  startedAtIdx: index('started_at_idx').on(table.startedAt),
-  deviceTypeIdx: index('device_type_idx').on(table.deviceType),
-  countryIdx: index('country_idx').on(table.country),
+  userIdIdx: pgIndex('user_id_idx').on(table.userId),
+  startedAtIdx: pgIndex('started_at_idx').on(table.startedAt),
+  deviceTypeIdx: pgIndex('device_type_idx').on(table.deviceType),
+  countryIdx: pgIndex('country_idx').on(table.country),
 }));
 
 export const userSessionsRelations = relations(userSessions, ({ one }) => ({
@@ -491,17 +491,17 @@ export const userSessionsRelations = relations(userSessions, ({ one }) => ({
 // ============================================
 // PWA INSTALLATIONS TABLE
 // ============================================
-export const pwaInstallations = mysqlTable('pwa_installations', {
-  id: int('id').primaryKey().autoincrement(),
-  userId: int('user_id'), // Nullable for anonymous installs
+export const pwaInstallations = pgTable('pwa_installations', {
+  id: integer('id').primaryKey().serial(),
+  userId: integer('user_id'), // Nullable for anonymous installs
   deviceType: varchar('device_type', { length: 50 }), // 'mobile', 'tablet', 'desktop'
   platform: varchar('platform', { length: 50 }), // 'android', 'ios', 'windows', 'mac', 'linux'
   userAgent: text('user_agent'),
   installedAt: timestamp('installed_at').defaultNow().notNull(),
 }, (table) => ({
-  userIdIdx: index('user_id_idx').on(table.userId),
-  installedAtIdx: index('installed_at_idx').on(table.installedAt),
-  platformIdx: index('platform_idx').on(table.platform),
+  userIdIdx: pgIndex('user_id_idx').on(table.userId),
+  installedAtIdx: pgIndex('installed_at_idx').on(table.installedAt),
+  platformIdx: pgIndex('platform_idx').on(table.platform),
 }));
 
 export const pwaInstallationsRelations = relations(pwaInstallations, ({ one }) => ({
@@ -512,58 +512,58 @@ export const pwaInstallationsRelations = relations(pwaInstallations, ({ one }) =
 }));
 
 // Stream Moderators - Temporary moderators assigned by broadcaster
-export const streamModerators = mysqlTable('stream_moderators', {
-  id: int('id').primaryKey().autoincrement(),
-  streamId: int('stream_id').notNull(),
-  userId: int('user_id').notNull(), // Moderator user ID
-  assignedBy: int('assigned_by').notNull(), // Broadcaster user ID
+export const streamModerators = pgTable('stream_moderators', {
+  id: integer('id').primaryKey().serial(),
+  streamId: integer('stream_id').notNull(),
+  userId: integer('user_id').notNull(), // Moderator user ID
+  assignedBy: integer('assigned_by').notNull(), // Broadcaster user ID
   assignedAt: timestamp('assigned_at').defaultNow().notNull(),
 }, (table) => ({
-  streamIdIdx: index('stream_id_idx').on(table.streamId),
-  userIdIdx: index('user_id_idx').on(table.userId),
-  uniqueStreamUser: index('unique_stream_user').on(table.streamId, table.userId),
+  streamIdIdx: pgIndex('stream_id_idx').on(table.streamId),
+  userIdIdx: pgIndex('user_id_idx').on(table.userId),
+  uniqueStreamUser: pgIndex('unique_stream_user').on(table.streamId, table.userId),
 }));
 
 // Stream Bans - Users banned from specific streams
-export const streamBans = mysqlTable('stream_bans', {
-  id: int('id').primaryKey().autoincrement(),
-  streamId: int('stream_id').notNull(),
-  userId: int('user_id').notNull(), // Banned user ID
-  bannedBy: int('banned_by').notNull(), // Moderator/Broadcaster user ID
+export const streamBans = pgTable('stream_bans', {
+  id: integer('id').primaryKey().serial(),
+  streamId: integer('stream_id').notNull(),
+  userId: integer('user_id').notNull(), // Banned user ID
+  bannedBy: integer('banned_by').notNull(), // Moderator/Broadcaster user ID
   reason: varchar('reason', { length: 255 }),
   banType: varchar('ban_type', { length: 20 }).default('kick').notNull(), // 'kick' (temporary), 'ban' (permanent)
   bannedAt: timestamp('banned_at').defaultNow().notNull(),
 }, (table) => ({
-  streamIdIdx: index('stream_id_idx').on(table.streamId),
-  userIdIdx: index('user_id_idx').on(table.userId),
-  uniqueStreamUser: index('unique_stream_user').on(table.streamId, table.userId),
+  streamIdIdx: pgIndex('stream_id_idx').on(table.streamId),
+  userIdIdx: pgIndex('user_id_idx').on(table.userId),
+  uniqueStreamUser: pgIndex('unique_stream_user').on(table.streamId, table.userId),
 }));
 
 // Private Stream Access - Users who paid to enter private stream
-export const privateStreamAccess = mysqlTable('private_stream_access', {
-  id: int('id').primaryKey().autoincrement(),
-  streamId: int('stream_id').notNull(),
-  userId: int('user_id').notNull(),
-  giftId: int('gift_id'), // Gift sent to gain access (nullable for entry price streams)
+export const privateStreamAccess = pgTable('private_stream_access', {
+  id: integer('id').primaryKey().serial(),
+  streamId: integer('stream_id').notNull(),
+  userId: integer('user_id').notNull(),
+  giftId: integer('gift_id'), // Gift sent to gain access (nullable for entry price streams)
   grantedAt: timestamp('granted_at').defaultNow().notNull(),
 }, (table) => ({
-  streamIdIdx: index('stream_id_idx').on(table.streamId),
-  userIdIdx: index('user_id_idx').on(table.userId),
-  uniqueStreamUser: index('unique_stream_user').on(table.streamId, table.userId),
+  streamIdIdx: pgIndex('stream_id_idx').on(table.streamId),
+  userIdIdx: pgIndex('user_id_idx').on(table.userId),
+  uniqueStreamUser: pgIndex('unique_stream_user').on(table.streamId, table.userId),
 }));
 
 // Deleted Messages - Track deleted messages for moderation
-export const deletedMessages = mysqlTable('deleted_messages', {
-  id: int('id').primaryKey().autoincrement(),
-  streamId: int('stream_id').notNull(),
+export const deletedMessages = pgTable('deleted_messages', {
+  id: integer('id').primaryKey().serial(),
+  streamId: integer('stream_id').notNull(),
   messageId: varchar('message_id', { length: 255 }).notNull(), // Socket.IO message ID
-  userId: int('user_id').notNull(), // Original message sender
+  userId: integer('user_id').notNull(), // Original message sender
   content: text('content').notNull(), // Original message content
-  deletedBy: int('deleted_by').notNull(), // Moderator/Broadcaster user ID
+  deletedBy: integer('deleted_by').notNull(), // Moderator/Broadcaster user ID
   deletedAt: timestamp('deleted_at').defaultNow().notNull(),
 }, (table) => ({
-  streamIdIdx: index('stream_id_idx').on(table.streamId),
-  messageIdIdx: index('message_id_idx').on(table.messageId),
+  streamIdIdx: pgIndex('stream_id_idx').on(table.streamId),
+  messageIdIdx: pgIndex('message_id_idx').on(table.messageId),
 }));
 
 export const streamModeratorsRelations = relations(streamModerators, ({ one }) => ({
@@ -625,10 +625,10 @@ export const deletedMessagesRelations = relations(deletedMessages, ({ one }) => 
 // ============================================
 // SITE VISITS TABLE - Track page views
 // ============================================
-export const siteVisits = mysqlTable('site_visits', {
-  id: int('id').primaryKey().autoincrement(),
+export const siteVisits = pgTable('site_visits', {
+  id: integer('id').primaryKey().serial(),
   page: varchar('page', { length: 255 }).notNull(), // Page path (e.g., '/', '/streams', '/feed')
-  userId: int('user_id'), // NULL for anonymous visitors
+  userId: integer('user_id'), // NULL for anonymous visitors
   ipAddress: varchar('ip_address', { length: 45 }), // IPv4 or IPv6
   userAgent: text('user_agent'), // Browser/device info
   referrer: text('referrer'), // Where they came from
@@ -637,11 +637,11 @@ export const siteVisits = mysqlTable('site_visits', {
   countryCode: varchar('country_code', { length: 2 }), // ISO 2-letter country code (e.g., 'US', 'ES')
   visitedAt: timestamp('visited_at').defaultNow().notNull(),
 }, (table) => ({
-  pageIdx: index('page_idx').on(table.page),
-  userIdIdx: index('user_id_idx').on(table.userId),
-  sessionIdIdx: index('session_id_idx').on(table.sessionId),
-  visitedAtIdx: index('visited_at_idx').on(table.visitedAt),
-  countryCodeIdx: index('country_code_idx').on(table.countryCode),
+  pageIdx: pgIndex('page_idx').on(table.page),
+  userIdIdx: pgIndex('user_id_idx').on(table.userId),
+  sessionIdIdx: pgIndex('session_id_idx').on(table.sessionId),
+  visitedAtIdx: pgIndex('visited_at_idx').on(table.visitedAt),
+  countryCodeIdx: pgIndex('country_code_idx').on(table.countryCode),
 }));
 
 // ============================================
@@ -649,78 +649,78 @@ export const siteVisits = mysqlTable('site_visits', {
 // ============================================
 
 // Bot Accounts - System-managed accounts for automated content
-export const botAccounts = mysqlTable('bot_accounts', {
-  id: int('id').primaryKey().autoincrement(),
-  userId: int('user_id').notNull(), // Links to users table
+export const botAccounts = pgTable('bot_accounts', {
+  id: integer('id').primaryKey().serial(),
+  userId: integer('user_id').notNull(), // Links to users table
   botType: varchar('bot_type', { length: 50 }).notNull(), // 'content_creator', 'engagement', 'announcer'
   isActive: boolean('is_active').default(true).notNull(),
-  postFrequencyMinutes: int('post_frequency_minutes').default(120).notNull(), // How often to post
+  postFrequencyMinutes: integer('post_frequency_minutes').default(120).notNull(), // How often to post
   lastPostedAt: timestamp('last_posted_at'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().onUpdateNow().notNull(),
 }, (table) => ({
-  userIdIdx: index('user_id_idx').on(table.userId),
-  botTypeIdx: index('bot_type_idx').on(table.botType),
-  isActiveIdx: index('is_active_idx').on(table.isActive),
+  userIdIdx: pgIndex('user_id_idx').on(table.userId),
+  botTypeIdx: pgIndex('bot_type_idx').on(table.botType),
+  isActiveIdx: pgIndex('is_active_idx').on(table.isActive),
 }));
 
 // Content Templates - Pre-written content for bots to post
-export const contentTemplates = mysqlTable('content_templates', {
-  id: int('id').primaryKey().autoincrement(),
+export const contentTemplates = pgTable('content_templates', {
+  id: integer('id').primaryKey().serial(),
   category: varchar('category', { length: 50 }).notNull(), // 'question', 'fact', 'conversation_starter', 'announcement'
   content: text('content').notNull(),
   mediaUrl: text('media_url'), // Optional image/video URL
   isActive: boolean('is_active').default(true).notNull(),
-  usageCount: int('usage_count').default(0).notNull(), // Track how many times used
+  usageCount: integer('usage_count').default(0).notNull(), // Track how many times used
   lastUsedAt: timestamp('last_used_at'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 }, (table) => ({
-  categoryIdx: index('category_idx').on(table.category),
-  isActiveIdx: index('is_active_idx').on(table.isActive),
+  categoryIdx: pgIndex('category_idx').on(table.category),
+  isActiveIdx: pgIndex('is_active_idx').on(table.isActive),
 }));
 
 // Comment Templates - Simple engagement comments
-export const commentTemplates = mysqlTable('comment_templates', {
-  id: int('id').primaryKey().autoincrement(),
+export const commentTemplates = pgTable('comment_templates', {
+  id: integer('id').primaryKey().serial(),
   content: text('content').notNull(), // "Interesting!", "What do you think?", etc.
   sentiment: varchar('sentiment', { length: 20 }).default('neutral').notNull(), // 'positive', 'neutral', 'question'
   isActive: boolean('is_active').default(true).notNull(),
-  usageCount: int('usage_count').default(0).notNull(),
+  usageCount: integer('usage_count').default(0).notNull(),
   lastUsedAt: timestamp('last_used_at'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 }, (table) => ({
-  sentimentIdx: index('sentiment_idx').on(table.sentiment),
-  isActiveIdx: index('is_active_idx').on(table.isActive),
+  sentimentIdx: pgIndex('sentiment_idx').on(table.sentiment),
+  isActiveIdx: pgIndex('is_active_idx').on(table.isActive),
 }));
 
 // Bootstrap Activity Config - Global settings
-export const bootstrapConfig = mysqlTable('bootstrap_config', {
-  id: int('id').primaryKey().autoincrement(),
+export const bootstrapConfig = pgTable('bootstrap_config', {
+  id: integer('id').primaryKey().serial(),
   isEnabled: boolean('is_enabled').default(true).notNull(),
   autoPostingEnabled: boolean('auto_posting_enabled').default(true).notNull(),
   autoCommentsEnabled: boolean('auto_comments_enabled').default(true).notNull(),
   streamAnnouncementsEnabled: boolean('stream_announcements_enabled').default(true).notNull(),
-  minPostIntervalMinutes: int('min_post_interval_minutes').default(30).notNull(),
-  maxPostIntervalMinutes: int('max_post_interval_minutes').default(180).notNull(),
+  minPostIntervalMinutes: integer('min_post_interval_minutes').default(30).notNull(),
+  maxPostIntervalMinutes: integer('max_post_interval_minutes').default(180).notNull(),
   commentProbability: decimal('comment_probability', { precision: 3, scale: 2 }).default('0.15').notNull(), // 15% chance
-  maxCommentsPerPost: int('max_comments_per_post').default(2).notNull(),
+  maxCommentsPerPost: integer('max_comments_per_post').default(2).notNull(),
   updatedAt: timestamp('updated_at').defaultNow().onUpdateNow().notNull(),
 });
 
 // Automated Activity Log - Track all automated actions
-export const activityLog = mysqlTable('activity_log', {
-  id: int('id').primaryKey().autoincrement(),
+export const activityLog = pgTable('activity_log', {
+  id: integer('id').primaryKey().serial(),
   activityType: varchar('activity_type', { length: 50 }).notNull(), // 'post', 'comment', 'announcement'
-  botAccountId: int('bot_account_id'),
-  targetId: int('target_id'), // Post ID, Comment ID, etc.
-  templateId: int('template_id'), // Which template was used
+  botAccountId: integer('bot_account_id'),
+  targetId: integer('target_id'), // Post ID, Comment ID, etc.
+  templateId: integer('template_id'), // Which template was used
   success: boolean('success').default(true).notNull(),
   errorMessage: text('error_message'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 }, (table) => ({
-  activityTypeIdx: index('activity_type_idx').on(table.activityType),
-  botAccountIdIdx: index('bot_account_id_idx').on(table.botAccountId),
-  createdAtIdx: index('created_at_idx').on(table.createdAt),
+  activityTypeIdx: pgIndex('activity_type_idx').on(table.activityType),
+  botAccountIdIdx: pgIndex('bot_account_id_idx').on(table.botAccountId),
+  createdAtIdx: pgIndex('created_at_idx').on(table.createdAt),
 }));
 
 // Relations
