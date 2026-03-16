@@ -1,58 +1,58 @@
 /**
- * Firebase Admin SDK Service
- * Handles authentication verification
+ * Firebase Admin SDK service for Vercel serverless functions
  */
 
 import admin from 'firebase-admin';
 
-let firebaseApp: admin.app.App | null = null;
+let firebaseApp = null;
 
-/**
- * Initialize Firebase Admin SDK
- */
+function hasValue(value) {
+  return typeof value === 'string' && value.trim().length > 0;
+}
+
+function getRequestSafeError(error) {
+  if (error instanceof Error) {
+    return { name: error.name, message: error.message };
+  }
+  return { message: String(error) };
+}
+
 export function initializeFirebase() {
-  // Check if Firebase Admin is already initialized
   if (admin.apps.length > 0) {
     firebaseApp = admin.app();
-    console.log('✅ Firebase Admin already initialized');
     return firebaseApp;
   }
 
+  const projectId = process.env.FIREBASE_PROJECT_ID;
+  const privateKey = process.env.FIREBASE_PRIVATE_KEY;
+  const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
+
+  if (!hasValue(projectId) || !hasValue(privateKey) || !hasValue(clientEmail)) {
+    console.warn('[FIREBASE] Missing admin credentials', {
+      hasProjectId: hasValue(projectId),
+      hasPrivateKey: hasValue(privateKey),
+      hasClientEmail: hasValue(clientEmail),
+    });
+    return null;
+  }
+
   try {
-    // Get credentials from environment variables
-    const projectId = process.env.FIREBASE_PROJECT_ID;
-    const privateKey = process.env.FIREBASE_PRIVATE_KEY;
-    const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
-
-    // Validate credentials
-    if (!projectId || !privateKey || !clientEmail) {
-      console.warn('⚠️ Firebase Admin credentials not found in environment variables');
-      console.warn('FIREBASE_PROJECT_ID:', projectId ? '✅' : '❌');
-      console.warn('FIREBASE_CLIENT_EMAIL:', clientEmail ? '✅' : '❌');
-      console.warn('FIREBASE_PRIVATE_KEY:', privateKey ? '✅' : '❌');
-      return null;
-    }
-
-    // Initialize Firebase Admin
     firebaseApp = admin.initializeApp({
       credential: admin.credential.cert({
         projectId,
-        privateKey: privateKey.replace(/\\n/g, '\n'), // Handle newlines in private key
+        privateKey: privateKey.replace(/\\n/g, '\n'),
         clientEmail,
       }),
     });
 
-    console.log('✅ Firebase Admin initialized successfully');
+    console.log('[FIREBASE] Admin initialized');
     return firebaseApp;
   } catch (error) {
-    console.error('❌ Failed to initialize Firebase Admin:', error);
+    console.error('[FIREBASE] Failed to initialize admin app', getRequestSafeError(error));
     return null;
   }
 }
 
-/**
- * Get Firebase Admin app instance
- */
 export function getFirebaseApp() {
   if (!firebaseApp) {
     firebaseApp = initializeFirebase();
@@ -60,19 +60,17 @@ export function getFirebaseApp() {
   return firebaseApp;
 }
 
-/**
- * Verify Firebase ID token
- */
-export async function verifyIdToken(token: string) {
+export async function verifyIdToken(token) {
   try {
     const app = getFirebaseApp();
     if (!app) {
-      throw new Error('Firebase Admin not initialized');
+      console.error('[FIREBASE] Cannot verify token: admin app unavailable');
+      return null;
     }
-    const decodedToken = await app.auth().verifyIdToken(token);
-    return decodedToken;
+
+    return await app.auth().verifyIdToken(token);
   } catch (error) {
-    console.error('❌ Error verifying Firebase token:', error);
+    console.error('[FIREBASE] verifyIdToken failed', getRequestSafeError(error));
     return null;
   }
 }

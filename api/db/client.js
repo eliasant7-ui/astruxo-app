@@ -1,45 +1,40 @@
 /**
- * Database connection setup using Drizzle ORM with Neon PostgreSQL
+ * Vercel serverless database client
  */
 
 import { drizzle } from 'drizzle-orm/neon-http';
 import { neon } from '@neondatabase/serverless';
-import * as schema from './schema';
+import * as schema from './schema.js';
 
-// Get database URL from environment
-const databaseUrl = process.env.DATABASE_URL || process.env.POSTGRES_URL;
+const databaseUrl =
+  process.env.DATABASE_URL ||
+  process.env.POSTGRES_URL ||
+  process.env.POSTGRES_PRISMA_URL ||
+  process.env.POSTGRES_URL_NON_POOLING;
 
 if (!databaseUrl) {
-  console.warn('⚠️ DATABASE_URL not found. Database features will be disabled.');
+  console.warn('[DB] DATABASE_URL/POSTGRES_URL is missing');
 }
 
-// Create Neon connection
 const sql = databaseUrl ? neon(databaseUrl) : null;
-
-// Create Drizzle ORM instance
 export const db = sql ? drizzle(sql, { schema }) : null;
 
-/**
- * Test database connection
- */
-export async function testConnection(): Promise<boolean> {
+export async function testConnection() {
   if (!db) {
-    console.warn('⚠️ Database not configured');
+    console.warn('[DB] testConnection skipped: db not configured');
     return false;
   }
+
   try {
     await db.execute('SELECT 1');
-    console.log('✅ Database connection successful');
+    console.log('[DB] Connection successful');
     return true;
   } catch (error) {
-    console.error('❌ Database connection failed:', error);
+    console.error('[DB] Connection failed:', error);
     return false;
   }
 }
 
-/**
- * Close database connection (Neon uses HTTP, no connection to close)
- */
-export async function closeConnection(): Promise<void> {
-  console.log('✅ Database connection closed');
+export async function closeConnection() {
+  console.log('[DB] Neon HTTP client does not require explicit close');
 }

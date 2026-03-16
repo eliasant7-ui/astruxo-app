@@ -17,6 +17,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { toast } from 'sonner';
 import { getReferralCode, clearReferralCode } from '@/lib/useReferralTracking';
 
 interface AuthDialogProps {
@@ -147,10 +148,22 @@ export default function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
         }),
       });
 
-      const data = await response.json();
+      const rawResponse = await response.text();
+      let data: any = {};
+
+      try {
+        data = rawResponse ? JSON.parse(rawResponse) : {};
+      } catch (parseError) {
+        console.error('Register response JSON parse error:', {
+          status: response.status,
+          statusText: response.statusText,
+          rawResponse,
+          parseError,
+        });
+      }
 
       if (!response.ok) {
-        throw new Error(data.message || 'Registration failed');
+        throw new Error(data.message || `Registration failed (${response.status})`);
       }
 
       if (data.success) {
@@ -167,21 +180,21 @@ export default function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
         setRegisterPassword('');
         setRegisterUsername('');
         setRegisterDisplayName('');
-        setConfirmPassword('');
         setReferralCode(null);
-        setLoading(false); // Clear loading state
-        
-        // Auto-switch to login tab after short delay
-        setTimeout(() => {
-          setAuthTab('login');
-        }, 1500);
       } else {
         setError(data.message || 'Failed to register');
-        setLoading(false);
       }
     } catch (err: any) {
       console.error('Register error:', err);
-      setError(err.message || 'Failed to register');
+      if (err.code === 'auth/email-already-in-use') {
+        setError('This email is already registered. Please log in instead.');
+      } else if (err.code === 'auth/weak-password') {
+        setError('Password is too weak. Use at least 6 characters.');
+      } else if (err.code === 'auth/invalid-email') {
+        setError('Please enter a valid email address.');
+      } else {
+        setError(err.message || 'Failed to register');
+      }
     } finally {
       setLoading(false);
     }
