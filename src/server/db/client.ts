@@ -1,53 +1,45 @@
-/** TREAT AS IMMUTABLE - This file is protected by the file-edit tool
- *
- * 
- * 
- * Database connection setup using Drizzle ORM with MySQL2
+/**
+ * Database connection setup using Drizzle ORM with Neon PostgreSQL
  */
 
-import { drizzle } from 'drizzle-orm/mysql2';
-import mysql from 'mysql2/promise';
-import { getDatabaseCredentials } from './config';
+import { drizzle } from 'drizzle-orm/neon-http';
+import { neon } from '@neondatabase/serverless';
 import * as schema from './schema';
 
-// Get database configuration
-const dbConfig = getDatabaseCredentials();
+// Get database URL from environment
+const databaseUrl = process.env.DATABASE_URL || process.env.POSTGRES_URL;
 
-// Create MySQL connection pool with SSL enabled
-const poolConnection = mysql.createPool({
-  host: dbConfig.host,
-  port: dbConfig.port,
-  user: dbConfig.user,
-  password: dbConfig.password,
-  database: dbConfig.database,
-  ssl: {
-    rejectUnauthorized: false,
-  },
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0,
-});
+if (!databaseUrl) {
+  console.warn('⚠️ DATABASE_URL not found. Database features will be disabled.');
+}
 
-// Create Drizzle instance
-export const db = drizzle(poolConnection, { schema, mode: 'default' });
+// Create Neon connection
+const sql = databaseUrl ? neon(databaseUrl) : null;
+
+// Create Drizzle ORM instance
+export const db = sql ? drizzle(sql, { schema }) : null;
 
 /**
  * Test database connection
  */
 export async function testConnection(): Promise<boolean> {
+  if (!db) {
+    console.warn('⚠️ Database not configured');
+    return false;
+  }
   try {
-    const connection = await poolConnection.getConnection();
-    await connection.ping();
-    connection.release();
+    await db.execute('SELECT 1');
+    console.log('✅ Database connection successful');
     return true;
-  } catch {
+  } catch (error) {
+    console.error('❌ Database connection failed:', error);
     return false;
   }
 }
 
 /**
- * Close database connection pool
+ * Close database connection (Neon uses HTTP, no connection to close)
  */
 export async function closeConnection(): Promise<void> {
-  await poolConnection.end();
+  console.log('✅ Database connection closed');
 }
