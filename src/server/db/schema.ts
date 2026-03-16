@@ -11,7 +11,7 @@ import { relations } from 'drizzle-orm';
 // USERS TABLE
 // ============================================
 export const users = pgTable('users', {
-  id: integer('id').primaryKey().serial(),
+  id: integer('id').serial(),
   firebaseUid: varchar('firebase_uid', { length: 128 }).notNull().unique(),
   username: varchar('username', { length: 50 }).notNull().unique(),
   email: varchar('email', { length: 255 }).notNull().unique(),
@@ -41,7 +41,7 @@ export const users = pgTable('users', {
 // FOLLOWS TABLE
 // ============================================
 export const follows = pgTable('follows', {
-  id: integer('id').primaryKey().serial(),
+  id: integer('id').serial(),
   followerId: integer('follower_id').notNull(),
   followingId: integer('following_id').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -55,7 +55,7 @@ export const follows = pgTable('follows', {
 // STREAMS TABLE
 // ============================================
 export const streams = pgTable('streams', {
-  id: integer('id').primaryKey().serial(),
+  id: integer('id').serial(),
   userId: integer('user_id').notNull(),
   slug: varchar('slug', { length: 100 }), // Human-readable URL slug (username or custom)
   title: varchar('title', { length: 255 }).notNull(),
@@ -91,7 +91,7 @@ export const streams = pgTable('streams', {
 // CHAT MESSAGES TABLE
 // ============================================
 export const chatMessages = pgTable('chat_messages', {
-  id: integer('id').primaryKey().serial(),
+  id: integer('id').serial(),
   streamId: integer('stream_id').notNull(),
   userId: integer('user_id').notNull(),
   message: text('message').notNull(),
@@ -105,7 +105,7 @@ export const chatMessages = pgTable('chat_messages', {
 // STREAM ENTRY PAYMENTS TABLE
 // ============================================
 export const streamEntryPayments = pgTable('stream_entry_payments', {
-  id: integer('id').primaryKey().serial(),
+  id: integer('id').serial(),
   streamId: integer('stream_id').notNull(),
   userId: integer('user_id').notNull(),
   amountPaid: integer('amount_paid').notNull(), // Coins paid for entry
@@ -119,7 +119,7 @@ export const streamEntryPayments = pgTable('stream_entry_payments', {
 // GIFTS CATALOG TABLE
 // ============================================
 export const gifts = pgTable('gifts', {
-  id: integer('id').primaryKey().serial(),
+  id: integer('id').serial(),
   name: varchar('name', { length: 50 }).notNull(),
   icon: varchar('icon', { length: 50 }).notNull(), // Lucide icon name
   coinPrice: integer('coin_price').notNull(), // Price in coins
@@ -136,7 +136,7 @@ export const gifts = pgTable('gifts', {
 // GIFT TRANSACTIONS TABLE
 // ============================================
 export const giftTransactions = pgTable('gift_transactions', {
-  id: integer('id').primaryKey().serial(),
+  id: integer('id').serial(),
   giftId: integer('gift_id').notNull(),
   senderId: integer('sender_id').notNull(), // User who sent the gift
   receiverId: integer('receiver_id').notNull(), // Streamer who received
@@ -155,7 +155,7 @@ export const giftTransactions = pgTable('gift_transactions', {
 // COIN TRANSACTIONS TABLE
 // ============================================
 export const coinTransactions = pgTable('coin_transactions', {
-  id: integer('id').primaryKey().serial(),
+  id: integer('id').serial(),
   userId: integer('user_id').notNull(),
   amount: integer('amount').notNull(), // Positive for purchase, negative for spending
   type: varchar('type', { length: 20 }).notNull(), // 'purchase', 'gift_sent', 'gift_received', 'withdrawal'
@@ -173,7 +173,7 @@ export const coinTransactions = pgTable('coin_transactions', {
 // POSTS TABLE (Social Feed)
 // ============================================
 export const posts = pgTable('posts', {
-  id: integer('id').primaryKey().serial(),
+  id: integer('id').serial(),
   userId: integer('user_id').notNull(),
   streamId: integer('stream_id'), // Reference to livestream if this post is sharing a stream
   content: text('content'), // Text content of the post
@@ -197,7 +197,7 @@ export const posts = pgTable('posts', {
 // COMMENTS TABLE
 // ============================================
 export const comments = pgTable('comments', {
-  id: integer('id').primaryKey().serial(),
+  id: integer('id').serial(),
   postId: integer('post_id').notNull(),
   userId: integer('user_id').notNull(),
   content: text('content').notNull(),
@@ -217,7 +217,7 @@ export const comments = pgTable('comments', {
 // LIKES TABLE
 // ============================================
 export const likes = pgTable('likes', {
-  id: integer('id').primaryKey().serial(),
+  id: integer('id').serial(),
   postId: integer('post_id').notNull(),
   userId: integer('user_id').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -231,7 +231,7 @@ export const likes = pgTable('likes', {
 // COMMENT LIKES TABLE
 // ============================================
 export const commentLikes = pgTable('comment_likes', {
-  id: integer('id').primaryKey().serial(),
+  id: integer('id').serial(),
   commentId: integer('comment_id').notNull(),
   userId: integer('user_id').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -357,7 +357,7 @@ export const likesRelations = relations(likes, ({ one }) => ({
 // REPORTS TABLE (RBAC System)
 // ============================================
 export const reports = pgTable('reports', {
-  id: integer('id').primaryKey().serial(),
+  id: integer('id').serial(),
   reporterUserId: integer('reporter_user_id').notNull(),
   reportedUserId: integer('reported_user_id'),
   reportedPostId: integer('reported_post_id'),
@@ -379,7 +379,7 @@ export const reports = pgTable('reports', {
 // MODERATION LOGS TABLE (RBAC System)
 // ============================================
 export const moderationLogs = pgTable('moderation_logs', {
-  id: integer('id').primaryKey().serial(),
+  id: integer('id').serial(),
   adminId: integer('admin_id').notNull(),
   actionType: varchar('action_type', { length: 50 }).notNull(), // 'ban_user', 'suspend_user', 'delete_post', 'restore_post', 'delete_stream'
   targetUserId: integer('target_user_id'),
@@ -434,7 +434,7 @@ export const moderationLogsRelations = relations(moderationLogs, ({ one }) => ({
 // ACTIVE CONNECTIONS TABLE (Tracking)
 // ============================================
 export const activeConnections = pgTable('active_connections', {
-  id: integer('id').primaryKey().serial(),
+  id: integer('id').serial(),
   socketId: varchar('socket_id', { length: 255 }).notNull().unique(),
   userId: integer('user_id'), // Nullable for anonymous users
   ipAddress: varchar('ip_address', { length: 45 }), // IPv4 or IPv6
@@ -463,7 +463,7 @@ export const activeConnectionsRelations = relations(activeConnections, ({ one })
 // USER SESSIONS TABLE (for analytics)
 // ============================================
 export const userSessions = pgTable('user_sessions', {
-  id: integer('id').primaryKey().serial(),
+  id: integer('id').serial(),
   userId: integer('user_id'), // Nullable for anonymous sessions
   sessionId: varchar('session_id', { length: 255 }).notNull().unique(),
   ipAddress: varchar('ip_address', { length: 45 }),
@@ -492,7 +492,7 @@ export const userSessionsRelations = relations(userSessions, ({ one }) => ({
 // PWA INSTALLATIONS TABLE
 // ============================================
 export const pwaInstallations = pgTable('pwa_installations', {
-  id: integer('id').primaryKey().serial(),
+  id: integer('id').serial(),
   userId: integer('user_id'), // Nullable for anonymous installs
   deviceType: varchar('device_type', { length: 50 }), // 'mobile', 'tablet', 'desktop'
   platform: varchar('platform', { length: 50 }), // 'android', 'ios', 'windows', 'mac', 'linux'
@@ -513,7 +513,7 @@ export const pwaInstallationsRelations = relations(pwaInstallations, ({ one }) =
 
 // Stream Moderators - Temporary moderators assigned by broadcaster
 export const streamModerators = pgTable('stream_moderators', {
-  id: integer('id').primaryKey().serial(),
+  id: integer('id').serial(),
   streamId: integer('stream_id').notNull(),
   userId: integer('user_id').notNull(), // Moderator user ID
   assignedBy: integer('assigned_by').notNull(), // Broadcaster user ID
@@ -526,7 +526,7 @@ export const streamModerators = pgTable('stream_moderators', {
 
 // Stream Bans - Users banned from specific streams
 export const streamBans = pgTable('stream_bans', {
-  id: integer('id').primaryKey().serial(),
+  id: integer('id').serial(),
   streamId: integer('stream_id').notNull(),
   userId: integer('user_id').notNull(), // Banned user ID
   bannedBy: integer('banned_by').notNull(), // Moderator/Broadcaster user ID
@@ -541,7 +541,7 @@ export const streamBans = pgTable('stream_bans', {
 
 // Private Stream Access - Users who paid to enter private stream
 export const privateStreamAccess = pgTable('private_stream_access', {
-  id: integer('id').primaryKey().serial(),
+  id: integer('id').serial(),
   streamId: integer('stream_id').notNull(),
   userId: integer('user_id').notNull(),
   giftId: integer('gift_id'), // Gift sent to gain access (nullable for entry price streams)
@@ -554,7 +554,7 @@ export const privateStreamAccess = pgTable('private_stream_access', {
 
 // Deleted Messages - Track deleted messages for moderation
 export const deletedMessages = pgTable('deleted_messages', {
-  id: integer('id').primaryKey().serial(),
+  id: integer('id').serial(),
   streamId: integer('stream_id').notNull(),
   messageId: varchar('message_id', { length: 255 }).notNull(), // Socket.IO message ID
   userId: integer('user_id').notNull(), // Original message sender
@@ -626,7 +626,7 @@ export const deletedMessagesRelations = relations(deletedMessages, ({ one }) => 
 // SITE VISITS TABLE - Track page views
 // ============================================
 export const siteVisits = pgTable('site_visits', {
-  id: integer('id').primaryKey().serial(),
+  id: integer('id').serial(),
   page: varchar('page', { length: 255 }).notNull(), // Page path (e.g., '/', '/streams', '/feed')
   userId: integer('user_id'), // NULL for anonymous visitors
   ipAddress: varchar('ip_address', { length: 45 }), // IPv4 or IPv6
@@ -650,7 +650,7 @@ export const siteVisits = pgTable('site_visits', {
 
 // Bot Accounts - System-managed accounts for automated content
 export const botAccounts = pgTable('bot_accounts', {
-  id: integer('id').primaryKey().serial(),
+  id: integer('id').serial(),
   userId: integer('user_id').notNull(), // Links to users table
   botType: varchar('bot_type', { length: 50 }).notNull(), // 'content_creator', 'engagement', 'announcer'
   isActive: boolean('is_active').default(true).notNull(),
@@ -666,7 +666,7 @@ export const botAccounts = pgTable('bot_accounts', {
 
 // Content Templates - Pre-written content for bots to post
 export const contentTemplates = pgTable('content_templates', {
-  id: integer('id').primaryKey().serial(),
+  id: integer('id').serial(),
   category: varchar('category', { length: 50 }).notNull(), // 'question', 'fact', 'conversation_starter', 'announcement'
   content: text('content').notNull(),
   mediaUrl: text('media_url'), // Optional image/video URL
@@ -681,7 +681,7 @@ export const contentTemplates = pgTable('content_templates', {
 
 // Comment Templates - Simple engagement comments
 export const commentTemplates = pgTable('comment_templates', {
-  id: integer('id').primaryKey().serial(),
+  id: integer('id').serial(),
   content: text('content').notNull(), // "Interesting!", "What do you think?", etc.
   sentiment: varchar('sentiment', { length: 20 }).default('neutral').notNull(), // 'positive', 'neutral', 'question'
   isActive: boolean('is_active').default(true).notNull(),
@@ -695,7 +695,7 @@ export const commentTemplates = pgTable('comment_templates', {
 
 // Bootstrap Activity Config - Global settings
 export const bootstrapConfig = pgTable('bootstrap_config', {
-  id: integer('id').primaryKey().serial(),
+  id: integer('id').serial(),
   isEnabled: boolean('is_enabled').default(true).notNull(),
   autoPostingEnabled: boolean('auto_posting_enabled').default(true).notNull(),
   autoCommentsEnabled: boolean('auto_comments_enabled').default(true).notNull(),
@@ -709,7 +709,7 @@ export const bootstrapConfig = pgTable('bootstrap_config', {
 
 // Automated Activity Log - Track all automated actions
 export const activityLog = pgTable('activity_log', {
-  id: integer('id').primaryKey().serial(),
+  id: integer('id').serial(),
   activityType: varchar('activity_type', { length: 50 }).notNull(), // 'post', 'comment', 'announcement'
   botAccountId: integer('bot_account_id'),
   targetId: integer('target_id'), // Post ID, Comment ID, etc.
