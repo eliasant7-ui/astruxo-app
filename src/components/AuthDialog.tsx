@@ -63,13 +63,25 @@ export default function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
 
     try {
       await signInWithEmailAndPassword(auth, loginEmail, loginPassword);
+      toast.success('Welcome back!');
       onOpenChange(false);
       // Reset form
       setLoginEmail('');
       setLoginPassword('');
     } catch (err: any) {
       console.error('Login error:', err);
-      setError(err.message || 'Failed to login');
+      // User-friendly error messages
+      if (err.code === 'auth/invalid-credential') {
+        setError('Invalid email or password. Please try again.');
+      } else if (err.code === 'auth/user-not-found') {
+        setError('No account found with this email.');
+      } else if (err.code === 'auth/wrong-password') {
+        setError('Incorrect password. Please try again.');
+      } else if (err.code === 'auth/too-many-requests') {
+        setError('Too many failed attempts. Please try again later.');
+      } else {
+        setError('Failed to login. Please check your credentials.');
+      }
     } finally {
       setLoading(false);
     }
