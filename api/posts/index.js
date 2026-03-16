@@ -1,8 +1,6 @@
 // Vercel Serverless Function - Create Post
-import { db } from '../../src/server/db/client.js';
-import { posts, users } from '../../src/server/db/schema.js';
+import { neon } from '@neondatabase/serverless';
 import { verifyIdToken } from '../../src/server/services/firebase.js';
-import { eq } from 'drizzle-orm';
 
 export const config = {
   runtime: 'nodejs',
@@ -15,9 +13,12 @@ export default async function handler(req, res) {
   }
 
   try {
-    if (!db) {
+    const databaseUrl = process.env.DATABASE_URL;
+    if (!databaseUrl) {
       return res.status(500).json({ error: 'Database not configured' });
     }
+
+    const sql = neon(databaseUrl);
 
     // Verify authentication
     const authHeader = req.headers.authorization;
@@ -34,9 +35,12 @@ export default async function handler(req, res) {
     const firebaseUid = decodedToken.uid;
 
     // Get user from database
-    const userResult = await db.select().from(users).where(eq(users.firebaseUid, firebaseUid)).limit(1);
-    if (!userResult.length) {
-      return res.status(404).json({ error: 'User not found' });
+    const userResult = await sql`
+      SELECT * FROM users WHERE "firebaseUid" = ${firebaseUid} LIMIT 1
+    `;
+
+    if (!userResult || userResult.length === 0) {
+      return res.status(404).json({ error: 'User not found. Please complete profile setup at /sync-user' });
     }
 
     const user = userResult[0];
@@ -49,22 +53,50 @@ export default async function handler(req, res) {
     }
 
     // Create post
-    const createdPost = await db.insert(posts).values({
-      userId: user.id,
-      streamId: streamId || null,
-      content: content || null,
-      mediaType: mediaType || null,
-      mediaUrl: mediaUrl || null,
-      thumbnailUrl: thumbnailUrl || null,
-      linkPreview: linkPreview || null,
-      likeCount: 0,
-      commentCount: 0,
-      viewCount: 0,
-    }).returning();
+    const createdPost = await sql`
+      INSERT INTO posts (
+        "userId",
+        "streamId",
+        content,
+        "mediaType",
+        "mediaUrl",
+        "thumbnailUrl",
+        "linkPreview",
+        "likeCount",
+        "commentCount",
+        "viewCount"
+      ) VALUES (
+        ${user.id},
+        ${streamId || null},
+        ${content || null},
+        ${mediaType || null},
+        ${mediaUrl || null},
+        ${thumbnailUrl || null},
+        ${linkPreview || null},
+        0,
+        0,
+        0
+      )
+      RETURNING *
+    `;
 
     console.log('✅ Post created:', createdPost[0].id);
 
-    res.status(201).json({ success: true, post: createdPost[0] });
+    res.status(201).json({ 
+      success: true, 
+      post: {
+        ...createdPost[0],
+        user: {
+          id: user.id,
+          username: user.username,
+          displayName: user.displayName,
+          avatarUrl: user.avatarUrl,
+          followerCount: user.followerCount,
+          firebaseUid: user.firebaseUid,
+          isLive: user.isLive,
+        }
+      }
+    });
   } catch (error) {
     console.error('Error creating post:', error);
     res.status(500).json({ error: 'Failed to create post', message: String(error) });
