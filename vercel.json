@@ -1,20 +1,10 @@
 {
+  "installCommand": "npm install",
   "buildCommand": "npm run build",
   "outputDirectory": "dist/client",
-  "devCommand": "npm run dev",
-  "installCommand": "npm install",
   "framework": "vite",
   "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "/api/$1"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
-  ],
-  "env": {
-    "NODE_ENV": "production"
-  }
+    { "source": "/api/(.*)", "destination": "/api/$1" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
 }
