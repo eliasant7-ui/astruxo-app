@@ -448,13 +448,19 @@ export default function PostCard({ post, onPostDeleted, onCommentAdded, isVisito
 
   return (
     <Card className="glass-card hover:shadow-xl transition-all duration-300">
+      {/* Make entire card clickable (except interactive elements) */}
+      <div 
+        className="cursor-pointer"
+        onClick={() => navigate(`/post/${post.id}`)}
+      >
       <CardHeader className="flex flex-row items-center gap-4">
         {/* Avatar with LIVE indicator */}
         <div className="relative">
           {post.user?.isLive && post.user?.currentStreamId ? (
             <div 
               className="cursor-pointer group"
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 if (isVisitor) {
                   setSignupTrigger('stream');
                   setShowSignupPrompt(true);
@@ -934,6 +940,8 @@ export default function PostCard({ post, onPostDeleted, onCommentAdded, isVisito
           </PopoverContent>
         </Popover>
       </CardFooter>
+      </div>
+      {/* End of clickable card area */}
 
       {/* Comments Dialog */}
       <CommentsDialog
