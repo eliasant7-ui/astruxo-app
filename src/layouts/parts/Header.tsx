@@ -190,13 +190,15 @@ export default function Header() {
           {/* Mobile menu */}
           {isMobileMenuOpen && (
             <div className="md:hidden py-4 border-t border-border">
-              <nav className="flex flex-col gap-4">
+              <nav className="flex flex-col gap-2">
                 {navItems.map((item) => (
                   <Link
                     key={item.href}
                     to={item.href}
-                    className={`text-sm font-medium transition-colors hover:text-primary ${
-                      location.pathname === item.href ? 'text-foreground' : 'text-muted-foreground'
+                    className={`text-sm font-medium transition-colors hover:text-primary px-3 py-3 rounded-md ${
+                      location.pathname === item.href 
+                        ? 'text-foreground bg-primary/10 font-semibold' 
+                        : 'text-muted-foreground hover:bg-muted'
                     }`}
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
