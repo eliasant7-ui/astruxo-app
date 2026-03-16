@@ -133,6 +133,8 @@ export default function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
       if (data.success) {
         // Clear referral code from localStorage after successful registration
         clearReferralCode();
+
+        toast.success('Account created successfully! Logging you in...');
         
         onOpenChange(false);
         // Reset form
@@ -140,7 +142,13 @@ export default function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
         setRegisterPassword('');
         setRegisterUsername('');
         setRegisterDisplayName('');
+        setConfirmPassword('');
         setReferralCode(null);
+        
+        // Auto-login after short delay
+        setTimeout(() => {
+          setAuthTab('login');
+        }, 1500);
       } else {
         setError(data.message || 'Failed to register');
       }

@@ -15,6 +15,7 @@ import {
 import { useAuth } from '@/lib/auth-context';
 import { signOut } from 'firebase/auth';
 import { auth, isFirebaseConfigured } from '@/lib/firebase-client';
+import { toast } from 'sonner';
 import AuthDialog from '@/components/AuthDialog';
 import LanguageSelector from '@/components/LanguageSelector';
 import UserSearchDialog from '@/components/UserSearchDialog';
@@ -32,11 +33,18 @@ export default function Header() {
   ];
 
   const handleLogout = async () => {
+    // Show confirmation dialog
+    if (!window.confirm('Are you sure you want to logout?')) {
+      return;
+    }
+    
     if (!auth) return;
     try {
       await signOut(auth);
+      toast.success('Logged out successfully');
     } catch (error) {
       console.error('Logout error:', error);
+      toast.error('Failed to logout');
     }
   };
 
