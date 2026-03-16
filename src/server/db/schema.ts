@@ -4,7 +4,7 @@
  * Phase 2: Social Features (Posts, Comments, Likes, Media)
  */
 
-import { pgTable, int, varchar, text, decimal, timestamp, boolean, index, json } from .drizzle-orm/pg-core.;
+import { pgTable, int, varchar, text, decimal, timestamp, boolean, index, json } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
 // ============================================
