@@ -1,8 +1,12 @@
 // Vercel Serverless Function - Create Post
-import { db } from '../db/client.js';
-import { posts, users } from '../db/schema.js';
-import { verifyIdToken } from '../services/firebase.js';
+import { db } from '../../src/server/db/client.js';
+import { posts, users } from '../../src/server/db/schema.js';
+import { verifyIdToken } from '../../src/server/services/firebase.js';
 import { eq } from 'drizzle-orm';
+
+export const config = {
+  runtime: 'nodejs',
+};
 
 export default async function handler(req, res) {
   // Only allow POST
